@@ -1,0 +1,46 @@
+version: "3.9"
+
+networks:
+  portfolio:
+    external: true
+
+services:
+  backend:
+    env_file: .env
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    networks:
+      - portfolio
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - "portfolio"
+
+  database:
+    image: "postgres:latest"
+
+    # Default postgres port
+    ports:
+      - "5432:5432"
+    networks:
+      - "portfolio"
+
+    # Ensure you have POSTGRES_USER and POSTGRES_PASSWORD entries in a .env file in the root of the directory alongside this file
+    env_file: .env
+
+    environment:
+      POSTGRES_DB: portfolio
+
+    volumes:
+      # Persists database data between container rebuilds
+      - ./db-data/:/var/lib/postgresql/data/
+      # Initialization scripts for the database
+      - ./db/init-scripts/:/docker-entrypoint-initdb.d

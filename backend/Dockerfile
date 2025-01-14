@@ -3,9 +3,8 @@ FROM rust:latest
 # Working dir inside the container
 WORKDIR /app
 
-# Copy all files into container
+# Install the app on path
 COPY . .
-
-RUN cargo install --path .
+RUN cargo run
 
 CMD ["portable-media"]

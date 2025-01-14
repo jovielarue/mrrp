@@ -7,8 +7,13 @@ services:
     env_file: .env
     build:
       context: ./backend
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: rebuild
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - database
     networks:
@@ -17,17 +22,22 @@ services:
   frontend:
     build:
       context: ./frontend
+    develop:
+      watch:
+        - path: ./frontend
+          target: /app
+          action: sync
     ports:
-      - "5173:5173"
+      - 5173:5173
     networks:
       - portable-media
 
   database:
-    image: "postgres:latest"
+    image: postgres:latest
 
     # Default postgres port
     ports:
-      - "5432:5432"
+      - 5432:5432
     networks:
       - portable-media
 

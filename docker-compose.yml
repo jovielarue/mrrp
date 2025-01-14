@@ -1,7 +1,5 @@
-version: "3.9"
-
 networks:
-  portfolio:
+  portable-media:
     external: true
 
 services:
@@ -22,7 +20,7 @@ services:
     ports:
       - "5173:5173"
     networks:
-      - "portable-media"
+      - portable-media
 
   database:
     image: "postgres:latest"
@@ -31,7 +29,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - "portable-media"
+      - portable-media
 
     # Ensure you have POSTGRES_USER and POSTGRES_PASSWORD entries in a .env file in the root of the directory alongside this file
     env_file: .env

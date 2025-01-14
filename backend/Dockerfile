@@ -8,4 +8,4 @@ COPY . .
 
 RUN cargo install --path .
 
-CMD ["rust-portfolio"]
+CMD ["portable-media"]

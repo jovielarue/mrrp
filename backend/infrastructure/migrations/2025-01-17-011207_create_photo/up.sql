@@ -72,6 +72,6 @@ CREATE TABLE photo (
   description VARCHAR(128),
   photographer VARCHAR(128),
   photo_path VARCHAR(128) NOT NULL,
-  time_taken timestamp NOT NULL,
+  time_taken timestamp with time zone NOT NULL,
   CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES "post" (post_id)
 );

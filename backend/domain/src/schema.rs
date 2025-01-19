@@ -10,7 +10,7 @@ diesel::table! {
         photographer -> Nullable<Varchar>,
         #[max_length = 128]
         photo_path -> Varchar,
-        time_taken -> Timestamp,
+        time_taken -> Timestamptz,
     }
 }
 

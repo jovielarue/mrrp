@@ -1,4 +1,4 @@
-use application::post::{create, read};
+use application::post::{create, delete, read};
 use domain::models::Post;
 use rocket::response::status::{Created, NotFound};
 use rocket::serde::json::Json;
@@ -28,4 +28,14 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 #[post("/new_post", format = "application/json", data = "<post>")]
 pub fn create_post_handler(post: Json<Post>) -> Created<String> {
     create::create_post(post)
+}
+
+#[get("/delete/<post_id>")]
+pub fn delete_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
+    let posts = delete::delete_post(post_id)?;
+    let response = Response {
+        body: ResponseBody::Posts(posts),
+    };
+
+    Ok(serde_json::to_string(&response).unwrap())
 }

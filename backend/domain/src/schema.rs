@@ -27,7 +27,4 @@ diesel::table! {
 
 diesel::joinable!(photos -> posts (post_id));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    photos,
-    posts,
-);
+diesel::allow_tables_to_appear_in_same_query!(photos, posts,);

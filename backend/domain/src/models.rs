@@ -45,7 +45,9 @@ impl FromSqlRow<Timestamptz, Pg> for DateTimeUtcForm {
     }
 }
 
-#[derive(Queryable, Selectable, Serialize, Ord, Eq, PartialEq, PartialOrd, Debug, FromForm)]
+#[derive(
+    Queryable, Selectable, Serialize, Deserialize, Ord, Eq, PartialEq, PartialOrd, Debug, FromForm,
+)]
 #[diesel(table_name = crate::schema::photos)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Photo {
@@ -80,6 +82,12 @@ pub struct Post {
     pub song: Option<String>,
 }
 
+#[derive(FromForm, Debug)]
+pub struct PostForm {
+    pub post: Post,
+    pub photos: Vec<Photo>,
+}
+
 // Required for serializing/deserializing DateTimeUtcForm
 mod date_format {
     use super::DateTimeUtcForm;
@@ -97,12 +105,14 @@ mod date_format {
         serializer.serialize_str(&s)
     }
 
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTimeUtcForm, D::Error>
     where
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
         let dt = NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?;
-        Ok(DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc))
+        Ok(DateTimeUtcForm {
+            time_taken: DateTime::<Utc>::from_naive_utc_and_offset(dt, Utc),
+        })
     }
 }

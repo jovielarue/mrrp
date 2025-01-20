@@ -1,8 +1,8 @@
-use application::post::read;
+use application::post::{create, read};
 use domain::models::Post;
-use rocket::get;
-use rocket::response::status::NotFound;
+use rocket::response::status::{Created, NotFound};
 use rocket::serde::json::Json;
+use rocket::{get, post};
 use shared::response_models::{Response, ResponseBody};
 
 #[get("/")]
@@ -19,8 +19,13 @@ pub fn list_posts_handler() -> String {
 pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
     let post = read::list_post(post_id)?;
     let response = Response {
-        body: ResponseBody(post),
+        body: ResponseBody::Post(post),
     };
 
     Ok(serde_json::to_string(&response).unwrap())
+}
+
+#[post("/new_post", format = "application/json", data = "<post>")]
+pub fn create_post_handler(post: Json<Post>) -> Created<String> {
+    create::create_post(post)
 }

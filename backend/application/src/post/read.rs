@@ -5,9 +5,9 @@ use rocket::response::status::NotFound;
 use shared::response_models::{Response, ResponseBody};
 
 pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
-    use domain::schema::post;
+    use domain::schema::posts;
 
-    match post::table
+    match posts::table
         .find(post_id)
         .first::<Post>(&mut establish_connection())
     {
@@ -30,15 +30,15 @@ pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
 }
 
 pub fn list_posts() -> Vec<Post> {
-    use domain::schema::post;
+    use domain::schema::posts;
 
-    match post::table
-        .select(post::all_columns)
+    match posts::table
+        .select(posts::all_columns)
         .load::<Post>(&mut establish_connection())
     {
-        Ok(mut posts) => {
-            posts.sort();
-            posts
+        Ok(mut post_list) => {
+            post_list.sort();
+            post_list
         }
         Err(err) => match err {
             _ => {

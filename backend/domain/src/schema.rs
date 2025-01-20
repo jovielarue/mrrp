@@ -1,7 +1,7 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    photo (photo_id) {
+    photos (photo_id) {
         photo_id -> Int4,
         post_id -> Int4,
         #[max_length = 128]
@@ -15,7 +15,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    post (post_id) {
+    posts (post_id) {
         post_id -> Int4,
         #[max_length = 2048]
         description -> Nullable<Varchar>,
@@ -25,9 +25,9 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(photo -> post (post_id));
+diesel::joinable!(photos -> posts (post_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    photo,
-    post,
+    photos,
+    posts,
 );

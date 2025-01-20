@@ -66,7 +66,7 @@ AS INTEGER
 INCREMENT BY 2
 START WITH 2;
 
-CREATE TABLE post (
+CREATE TABLE posts (
   post_id INTEGER PRIMARY KEY UNIQUE NOT NULL DEFAULT pseudo_encrypt(CAST(nextval('seq_post_id') as INTEGER)),
   description VARCHAR(2048),
   like_count INTEGER,

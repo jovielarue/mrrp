@@ -66,12 +66,12 @@ AS INTEGER
 INCREMENT BY 2
 START WITH 1;
 
-CREATE TABLE photo (
+CREATE TABLE photos (
   photo_id INTEGER PRIMARY KEY UNIQUE NOT NULL DEFAULT pseudo_encrypt(CAST(nextval('seq_post_id') as INTEGER)),
   post_id INTEGER NOT NULL,
   description VARCHAR(128),
   photographer VARCHAR(128),
   photo_path VARCHAR(128) NOT NULL,
   time_taken timestamp with time zone NOT NULL,
-  CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES "post" (post_id)
+  CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES "posts" (post_id)
 );

@@ -1,9 +1,9 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
-use rocket::serde::Serialize;
+use rocket::serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Selectable, Serialize, Ord, Eq, PartialEq, PartialOrd)]
-#[diesel(table_name = crate::schema::photo)]
+#[diesel(table_name = crate::schema::photos)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Photo {
     pub photo_id: i32,
@@ -15,8 +15,10 @@ pub struct Photo {
     pub time_taken: DateTime<Utc>,
 }
 
-#[derive(Queryable, Selectable, Serialize)]
-#[diesel(table_name = crate::schema::post)]
+#[derive(
+    Queryable, Selectable, Insertable, Serialize, Deserialize, Ord, Eq, PartialEq, PartialOrd,
+)]
+#[diesel(table_name = crate::schema::posts)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Post {
     pub post_id: i32,

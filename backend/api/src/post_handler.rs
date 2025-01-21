@@ -1,6 +1,7 @@
-use application::post::{create, delete, read};
+use application::post::{create, delete, read, upload};
 use domain::models::{Post, PostForm};
 use rocket::form::Form;
+use rocket::fs::TempFile;
 use rocket::response::status::{Created, NotFound};
 use rocket::{get, post};
 use shared::response_models::{Response, ResponseBody};
@@ -27,7 +28,14 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 
 #[post("/new_post", format = "multipart/form-data", data = "<post>")]
 pub fn create_post_handler(post: Form<PostForm>) -> Created<String> {
+    println!("{:?}", post);
     create::create_post(post)
+}
+
+#[post("/upload", format = "multipart/form-data", data = "<media>")]
+pub fn upload_media_handler<'f>(media: Form<TempFile<'f>>) -> Created<String> {
+    println!("{:?}", media);
+    upload::upload_media(media)
 }
 
 #[get("/delete/<post_id>")]

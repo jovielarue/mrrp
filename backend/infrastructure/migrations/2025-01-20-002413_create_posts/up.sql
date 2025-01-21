@@ -71,6 +71,7 @@ CREATE TABLE posts (
   description VARCHAR(2048),
   like_count INTEGER,
   song VARCHAR(128)
+  time_taken timestamptz NOT NULL DEFAULT (now() at time zone 'utc'),
 );
 
 

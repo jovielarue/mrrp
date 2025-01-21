@@ -39,26 +39,26 @@ $$ LANGUAGE plpgsql;
 -- This function works with our sequence to scramble its sequence value. Our sequences increment by 6, so we can store about 2,147,483,647/6 (357,913,941) different rows until we need to change this function to support BIGINTs. Currently, we cast the nextval which is a bigint (8 bytes) as an int (4 bytes).
 -- Function from https://wiki.postgresql.org/wiki/Pseudo_encrypt
 -- More info on numeric types: https://www.postgresql.org/docs/current/datatype-numeric.html
-CREATE OR REPLACE FUNCTION pseudo_encrypt(value INTEGER) returns INTEGER AS $func$
-DECLARE
-l1 INTEGER;
-l2 INTEGER;
-r1 INTEGER;
-r2 INTEGER;
-i INTEGER:=0;
-BEGIN
-  l1 := (value >> 16) & 65535;
-  r1 := value & 65535;
-  WHILE i < 3 LOOP
-    l2 := r1;
-    r2 := l1 # ((((1366 * r1 + 150889) % 714025) / 714025.0) * 32767)::INTEGER;
-    l1 := l2;
-    r1 := r2;
-    i := i + 1;
-  END LOOP;
-  return ((r1 << 16) + l1);
-END;
-$func$ LANGUAGE plpgsql strict immutable;
+--CREATE OR REPLACE FUNCTION pseudo_encrypt(value INTEGER) returns INTEGER AS $func$
+--DECLARE
+--l1 INTEGER;
+--l2 INTEGER;
+--r1 INTEGER;
+--r2 INTEGER;
+--i INTEGER:=0;
+--BEGIN
+--  l1 := (value >> 16) & 65535;
+--  r1 := value & 65535;
+--  WHILE i < 3 LOOP
+--    l2 := r1;
+--    r2 := l1 # ((((1366 * r1 + 150889) % 714025) / 714025.0) * 32767)::INTEGER;
+--    l1 := l2;
+--    r1 := r2;
+--    i := i + 1;
+--  END LOOP;
+--  return ((r1 << 16) + l1);
+--END;
+--$func$ LANGUAGE plpgsql strict immutable;
 
 
 CREATE SEQUENCE IF NOT EXISTS seq_photo_id
@@ -72,6 +72,6 @@ CREATE TABLE photos (
   description VARCHAR(128),
   photographer VARCHAR(128),
   photo_path VARCHAR(128) NOT NULL,
-  time_taken timestamp with timezone NOT NULL,
+  time_taken timestamptz NOT NULL DEFAULT (now() at time zone 'utc'),
   CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES "posts" (post_id)
 );

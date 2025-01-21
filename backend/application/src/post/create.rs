@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use domain::models::{Photo, Post, PostForm};
+use domain::models::{Post, PostForm};
 use infrastructure::establish_connection;
 use rocket::{form::Form, response::status::Created};
 use shared::response_models::{Response, ResponseBody};
@@ -10,8 +10,12 @@ pub fn create_post(new_post: Form<PostForm>) -> Created<String> {
     let new_post = new_post.into_inner();
     println!("{:?}", new_post);
 
-    let post: Post = new_post.post;
-    let photos: Vec<Photo> = new_post.photos;
+    let post: Post = Post {
+        post_id: 1,
+        description: new_post.description,
+        song: new_post.song,
+        like_count: None,
+    };
 
     match diesel::insert_into(posts::table)
         .values(&post)

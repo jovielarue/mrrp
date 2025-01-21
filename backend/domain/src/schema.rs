@@ -22,6 +22,7 @@ diesel::table! {
         like_count -> Nullable<Int4>,
         #[max_length = 128]
         song -> Nullable<Varchar>,
+        time_taken -> Timestamptz,
     }
 }
 

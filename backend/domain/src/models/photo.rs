@@ -15,7 +15,6 @@ pub struct Photo {
     pub description: Option<String>,
     pub photographer: Option<String>,
     pub photo_path: String,
-    #[serde(with = "date_format")]
     pub time_taken: DateTimeUtcForm,
 }
 

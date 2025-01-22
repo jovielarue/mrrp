@@ -1,22 +1,11 @@
-use std::process::Output;
-
 use chrono::{DateTime, Utc};
 use diesel::{
-    deserialize::{FromSql, FromSqlRow},
-    pg::Pg,
-    prelude::*,
-    serialize::ToSql,
-    sql_types::Timestamptz,
-    Expression,
+    deserialize::FromSqlRow, expression::AsExpression, pg::Pg, prelude::*, sql_types::Timestamptz,
 };
 use rocket::form::{self, FromFormField, ValueField};
 
 // Had to create DateTimeUtcForm so that I can create impls for DateTime as you can't impl for types
 // defined in external crates
-#[derive(
-    Queryable, QueryableByName, Insertable, Selectable, Ord, Eq, PartialEq, PartialOrd, Debug,
-)]
-#[diesel(table_name = crate::schema::photos)]
 pub struct DateTimeUtcForm {
     pub time_taken: DateTime<Utc>,
 }
@@ -25,6 +14,10 @@ pub struct DateTimeUtcForm {
 impl DateTimeUtcForm {
     pub fn inner(&self) -> &DateTime<Utc> {
         &self.time_taken
+    }
+
+    fn to_naive(&self) -> chrono::NaiveDateTime {
+        self.time_taken.naive_utc()
     }
 }
 
@@ -40,15 +33,15 @@ impl<'r> FromFormField<'r> for DateTimeUtcForm {
     }
 }
 
-// Required for diesel FromSqlRow trait
-impl FromSqlRow<Timestamptz, Pg> for DateTimeUtcForm {
-    fn build_from_row<'a>(
-        row: &impl diesel::row::Row<'a, Pg>,
-    ) -> diesel::deserialize::Result<Self> {
-        // Convert from the SQL `Timestamptz` to DateTime<Utc>
-        let timestamp: DateTime<Utc> = FromSqlRow::<Timestamptz, Pg>::build_from_row(row)?;
-        Ok(DateTimeUtcForm {
-            time_taken: timestamp,
-        })
-    }
-}
+//// Required for diesel FromSqlRow trait
+//impl FromSqlRow<Timestamptz, Pg> for DateTimeUtcForm {
+//    fn build_from_row<'a>(
+//        row: &impl diesel::row::Row<'a, Pg>,
+//    ) -> diesel::deserialize::Result<Self> {
+//        // Convert from the SQL `Timestamptz` to DateTime<Utc>
+//        let timestamp: DateTime<Utc> = FromSqlRow::<Timestamptz, Pg>::build_from_row(row)?;
+//        Ok(DateTimeUtcForm {
+//            time_taken: timestamp,
+//        })
+//    }
+//}

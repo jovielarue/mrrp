@@ -5,12 +5,16 @@ use diesel::{
 use rocket::form::{self, FromFormField, ValueField};
 use serde::{Deserialize, Serialize};
 
+use crate::schema;
+
 // Had to create DateTimeUtcForm so that I can create impls for DateTime as you can't impl for types
 // defined in external crates
 #[derive(
     Queryable, Insertable, Selectable, Serialize, Deserialize, Ord, Eq, PartialEq, PartialOrd, Debug,
 )]
+#[diesel(table_name = schema::photos)]
 pub struct DateTimeUtcForm {
+    #[diesel(sql_type = Timestamptz)]
     pub time_taken: DateTime<Utc>,
 }
 

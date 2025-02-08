@@ -1,4 +1,3 @@
-use crate::utils::date_time_utc_form::DateTimeUtcForm;
 use diesel::prelude::*;
 use rocket::{
     form::FromForm,
@@ -14,7 +13,6 @@ pub struct Photo {
     pub description: Option<String>,
     pub photographer: Option<String>,
     pub photo_path: String,
-    pub time_taken: DateTimeUtcForm,
 }
 
 #[derive(FromForm, Debug)]
@@ -24,5 +22,4 @@ pub struct PhotoForm {
     pub uuid: String,
     pub description: Option<String>,
     pub photographer: Option<String>,
-    pub time_taken: DateTimeUtcForm,
 }

@@ -10,7 +10,6 @@ diesel::table! {
         photographer -> Nullable<Varchar>,
         #[max_length = 128]
         photo_path -> Varchar,
-        time_taken -> Timestamptz,
     }
 }
 
@@ -22,10 +21,13 @@ diesel::table! {
         like_count -> Nullable<Int4>,
         #[max_length = 128]
         song -> Nullable<Varchar>,
-        time_taken -> Timestamptz,
+        time -> Timestamptz,
     }
 }
 
 diesel::joinable!(photos -> posts (post_id));
 
-diesel::allow_tables_to_appear_in_same_query!(photos, posts,);
+diesel::allow_tables_to_appear_in_same_query!(
+    photos,
+    posts,
+);

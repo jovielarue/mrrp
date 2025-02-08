@@ -1,4 +1,3 @@
-use crate::utils::date_time_utc_form::DateTimeUtcForm;
 use diesel::prelude::*;
 use rocket::{
     form::FromForm,
@@ -15,7 +14,6 @@ pub struct Post {
     pub description: Option<String>,
     pub like_count: Option<i32>,
     pub song: Option<String>,
-    pub time_taken: DateTimeUtcForm,
 }
 
 #[derive(FromForm, Debug)]

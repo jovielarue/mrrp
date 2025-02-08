@@ -17,7 +17,7 @@ INCREMENT BY 2
 START WITH 1;
 
 CREATE TABLE photos (
-  photo_id INTEGER PRIMARY KEY UNIQUE NOT NULL DEFAULT nextval('seq_post_id'),
+  photo_id INTEGER PRIMARY KEY UNIQUE DEFAULT nextval('seq_post_id'),
   post_id INTEGER NOT NULL,
   description VARCHAR(128),
   photographer VARCHAR(128),

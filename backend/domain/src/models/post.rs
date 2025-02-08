@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use rocket::{
     form::FromForm,
@@ -14,6 +15,7 @@ pub struct Post {
     pub description: Option<String>,
     pub like_count: Option<i32>,
     pub song: Option<String>,
+    pub time: DateTime<Utc>,
 }
 
 #[derive(FromForm, Debug)]

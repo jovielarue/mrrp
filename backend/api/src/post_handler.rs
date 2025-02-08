@@ -1,5 +1,5 @@
 use application::post::{create, delete, read, upload};
-use domain::models::{Post, PostForm};
+use domain::models::post::{Post, PostForm};
 use rocket::form::Form;
 use rocket::fs::TempFile;
 use rocket::response::status::{Created, NotFound};

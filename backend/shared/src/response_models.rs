@@ -1,4 +1,4 @@
-use domain::models::Post;
+use domain::models::post::Post;
 use rocket::serde::Serialize;
 
 #[derive(Serialize, Debug)]

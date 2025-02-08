@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use domain::models::{Post, PostForm};
+use domain::models::post::{Post, PostForm};
 use infrastructure::establish_connection;
 use rocket::{form::Form, response::status::Created};
 use shared::response_models::{Response, ResponseBody};
@@ -15,6 +15,7 @@ pub fn create_post(new_post: Form<PostForm>) -> Created<String> {
         description: new_post.description,
         song: new_post.song,
         like_count: None,
+        time: chrono::offset::Utc::now(),
     };
 
     match diesel::insert_into(posts::table)

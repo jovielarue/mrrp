@@ -12,7 +12,8 @@ use rocket::{
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Post {
     pub post_id: i32,
-    pub text: Option<String>,
+    pub username: String,
+    pub text: String,
     pub like_count: Option<i32>,
     pub time: DateTime<Utc>,
 }
@@ -21,7 +22,8 @@ impl Default for Post {
     fn default() -> Self {
         Post {
             post_id: 0,
-            text: None,
+            username: "Jovie".to_string(),
+            text: "".to_string(),
             like_count: None,
             time: chrono::offset::Utc::now(),
         }
@@ -30,6 +32,7 @@ impl Default for Post {
 
 #[derive(FromForm, Debug)]
 pub struct PostForm {
-    pub text: Option<String>,
-    pub user: Option<String>,
+    pub username: String,
+    pub password: String,
+    pub post: String,
 }

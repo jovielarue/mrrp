@@ -16,8 +16,10 @@ diesel::table! {
 diesel::table! {
     posts (post_id) {
         post_id -> Int4,
+        #[max_length = 128]
+        username -> Varchar,
         #[max_length = 2048]
-        text -> Nullable<Varchar>,
+        text -> Varchar,
         like_count -> Nullable<Int4>,
         time -> Timestamptz,
     }

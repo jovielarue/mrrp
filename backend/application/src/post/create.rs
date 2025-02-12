@@ -11,9 +11,8 @@ pub fn create_post(new_post: Form<PostForm>) -> Created<String> {
     println!("{:?}", new_post);
 
     let post: Post = Post {
-        post_id: 1,
-        description: new_post.description,
-        song: new_post.song,
+        post_id: 0,
+        text: new_post.text,
         like_count: None,
         time: chrono::offset::Utc::now(),
     };

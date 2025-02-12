@@ -5,6 +5,5 @@ WORKDIR /app
 
 # Install the app on path
 COPY . .
-RUN cargo run
 
-CMD ["portable-media"]
+CMD ["cargo", "run", ">", "dev/null"]

@@ -5,9 +5,8 @@ START WITH 2;
 
 CREATE TABLE posts (
   post_id INTEGER PRIMARY KEY UNIQUE NOT NULL DEFAULT nextval('seq_post_id'),
-  description VARCHAR(2048),
+  text VARCHAR(2048),
   like_count INTEGER,
-  song VARCHAR(128),
   time timestamptz NOT NULL DEFAULT (now() at time zone 'utc')
 );
 

@@ -10,9 +10,11 @@ use rocket::{
 #[diesel(table_name = crate::schema::photos)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 pub struct Photo {
+    pub post_id: i32,
+    pub photo_id: i32,
+    pub photo_path: String,
     pub description: Option<String>,
     pub photographer: Option<String>,
-    pub photo_path: String,
 }
 
 #[derive(FromForm, Debug)]

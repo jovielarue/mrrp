@@ -17,10 +17,8 @@ diesel::table! {
     posts (post_id) {
         post_id -> Int4,
         #[max_length = 2048]
-        description -> Nullable<Varchar>,
+        text -> Nullable<Varchar>,
         like_count -> Nullable<Int4>,
-        #[max_length = 128]
-        song -> Nullable<Varchar>,
         time -> Timestamptz,
     }
 }

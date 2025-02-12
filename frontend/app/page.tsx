@@ -11,7 +11,7 @@ export default function Home() {
     e.preventDefault();
     console.log("here");
     const formData = new FormData(e.target);
-    const response = await fetch("http://127.0.0.1:8000/api/new_post", {
+    const response = await fetch("http://localhost:8000/api/new_post", {
       body: formData,
       method: "POST",
     });

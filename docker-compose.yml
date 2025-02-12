@@ -39,6 +39,9 @@ services:
 
   backend:
     env_file: .env
+    environment:
+      ROCKET_ADDRESS: 0.0.0.0
+      ROCKET_PORT: 8000
     build:
       context: ./backend
     develop:

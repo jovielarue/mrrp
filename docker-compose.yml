@@ -3,22 +3,6 @@ networks:
     external: true
 
 services:
-  backend:
-    env_file: .env
-    build:
-      context: ./backend
-    develop:
-      watch:
-        - path: ./backend
-          target: /app
-          action: rebuild
-    ports:
-      - 8080:8080
-    depends_on:
-      - database
-    networks:
-      - portable-media
-
   frontend:
     build:
       context: ./frontend
@@ -28,7 +12,7 @@ services:
           target: /app
           action: sync
     ports:
-      - 5173:5173
+      - 3000:3000
     networks:
       - portable-media
 
@@ -52,3 +36,19 @@ services:
       - ./db-data/:/var/lib/postgresql/data/
       # Initialization scripts for the database
       - ./db/init-scripts/:/docker-entrypoint-initdb.d
+
+  backend:
+    env_file: .env
+    build:
+      context: ./backend
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: rebuild
+    ports:
+      - 8000:8000
+    depends_on:
+      - database
+    networks:
+      - portable-media

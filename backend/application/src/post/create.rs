@@ -1,10 +1,11 @@
+use core::result::Result;
 use diesel::prelude::*;
 use domain::models::post::{Post, PostForm};
 use infrastructure::establish_connection;
 use rocket::{form::Form, response::status::Created};
 use shared::response_models::{Response, ResponseBody};
 
-pub fn create_post(post_form: Form<PostForm>) -> Created<String> {
+pub fn create_post(post_form: Form<PostForm>) -> Result<Created<String>, diesel::result::Error> {
     use domain::schema::posts;
 
     let post_form = post_form.into_inner();
@@ -26,12 +27,8 @@ pub fn create_post(post_form: Form<PostForm>) -> Created<String> {
                 body: ResponseBody::Post(post),
             };
             println!("Db response - {:?}", response);
-            Created::new("").tagged_body(serde_json::to_string(&response).unwrap())
+            Ok(Created::new("").tagged_body(serde_json::to_string(&response).unwrap()))
         }
-        Err(err) => match err {
-            _ => {
-                panic!("Database error - {}", err);
-            }
-        },
+        Err(err) => Err(err),
     }
 }

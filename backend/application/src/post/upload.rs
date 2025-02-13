@@ -1,10 +1,10 @@
-use diesel::prelude::*;
-use domain::models::photo::Photo;
-use domain::models::post::Post;
-use domain::schema::photos;
-use infrastructure::establish_connection;
-use rocket::{form::Form, fs::TempFile, response::status::Created};
-use shared::response_models::{Response, ResponseBody};
+//use diesel::prelude::*;
+//use domain::models::photo::Photo;
+//use domain::models::post::Post;
+//use domain::schema::photos;
+//use infrastructure::establish_connection;
+//use rocket::{form::Form, fs::TempFile, response::status::Created};
+//use shared::response_models::{Response, ResponseBody};
 
 //pub fn upload_media<'f>(media: Form<TempFile<'f>>) -> Created<String> {
 //    use domain::schema::posts;

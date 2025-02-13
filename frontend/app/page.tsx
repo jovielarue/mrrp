@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import PostLister from "./components/post-lister";
 
 export default function Home() {
   const [username, setUsername] = useState<string>("");
@@ -21,7 +22,7 @@ export default function Home() {
   return (
     <div
       className={
-        "flex flex-col items-center justify-center gap-5 bg-background text-accent h-screen w-screen"
+        "flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent h-full w-screen"
       }
     >
       <h1 className={"text-2xl font-bold"}>Portable Media</h1>
@@ -71,12 +72,14 @@ export default function Home() {
           />
         </div>
         <button
-          className={"bg-primary text-background py-1 px-3"}
+          className={"bg-accent2 text-background py-1 px-3"}
           type="submit"
         >
           Post!
         </button>
       </form>
+      <h2 className={"mt-20 text-2xl font-bold text-accent"}>Posts:</h2>
+      <PostLister />
     </div>
   );
 }

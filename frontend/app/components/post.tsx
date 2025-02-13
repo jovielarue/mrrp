@@ -2,7 +2,7 @@ export type PostType = {
   username: string;
   time: string;
   text: string;
-  id: string;
+  post_id: string;
 };
 
 export default function Post(props: PostType) {

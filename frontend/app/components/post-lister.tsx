@@ -28,8 +28,8 @@ export default function PostLister() {
             username={post.username}
             time={post.time}
             text={post.text}
-            id={post.id}
-            key={post.id}
+            post_id={post.post_id}
+            key={post.post_id}
           />
         );
       })}

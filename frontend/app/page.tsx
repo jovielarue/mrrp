@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div
       className={
-        "flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent h-full w-screen"
+        "flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent min-h-screen w-screen"
       }
     >
       <h1 className={"text-2xl font-bold"}>Portable Media</h1>

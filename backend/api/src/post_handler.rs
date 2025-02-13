@@ -5,9 +5,9 @@ use rocket::response::status::{Created, NotFound};
 use rocket::{get, post};
 use shared::response_models::{Response, ResponseBody};
 
-#[get("/")]
+#[get("/list_posts")]
 pub fn list_posts_handler() -> String {
-    let posts: Vec<Post> = read::list_posts();
+    let posts: Vec<Post> = read::list_posts().expect("Unable to retrieve posts.");
     let response = Response {
         body: ResponseBody::Posts(posts),
     };

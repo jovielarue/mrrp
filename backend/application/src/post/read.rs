@@ -29,7 +29,7 @@ pub fn list_post(post_id: i32) -> Result<Post, NotFound<String>> {
     }
 }
 
-pub fn list_posts() -> Vec<Post> {
+pub fn list_posts() -> Result<Vec<Post>, diesel::result::Error> {
     use domain::schema::posts;
 
     match posts::table
@@ -38,12 +38,8 @@ pub fn list_posts() -> Vec<Post> {
     {
         Ok(mut post_list) => {
             post_list.sort();
-            post_list
+            Ok(post_list)
         }
-        Err(err) => match err {
-            _ => {
-                panic!("Database error - {}", err);
-            }
-        },
+        Err(err) => Err(err),
     }
 }

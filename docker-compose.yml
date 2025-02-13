@@ -6,15 +6,13 @@ services:
   frontend:
     build:
       context: ./frontend
-    develop:
-      watch:
-        - path: ./frontend
-          target: /app
-          action: sync
+      target: dev
     ports:
       - 3000:3000
     networks:
       - portable-media
+    volumes:
+      - ./frontend:/app
 
   database:
     image: postgres:latest

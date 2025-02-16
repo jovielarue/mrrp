@@ -26,9 +26,11 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 }
 
 #[post("/new_post", format = "multipart/form-data", data = "<post>")]
-pub fn create_post_handler(post: Form<PostForm>) -> Created<String> {
+pub fn create_post_handler(
+    post: Form<PostForm>,
+) -> Result<Created<String>, rocket::response::status::Conflict<String>> {
     println!("{:?}", post);
-    create::create_post(post).expect("Error creating post.")
+    create::create_post::<Post>(post)
 }
 
 //#[post("/upload", format = "multipart/form-data", data = "<media>")]

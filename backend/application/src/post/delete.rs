@@ -23,7 +23,7 @@ pub fn delete_post(id: i32) -> Result<Vec<Post>, NotFound<String>> {
                     Err(NotFound(serde_json::to_string(&response).unwrap()))?
                 }
                 _ => {
-                    panic!("Database error - {}", err);
+                    return Err(NotFound(format!("Database error: {}", err)));
                 }
             },
         };
@@ -39,7 +39,7 @@ pub fn delete_post(id: i32) -> Result<Vec<Post>, NotFound<String>> {
             }
             Err(err) => match err {
                 _ => {
-                    panic!("Database error - {}", err);
+                    return Err(NotFound(format!("Database error: {}", err)));
                 }
             },
         }

@@ -5,6 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  ::selection {
+    background: #1b151d;
+    color: #faf0ea;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

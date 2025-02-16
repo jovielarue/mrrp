@@ -13,7 +13,7 @@ export default function PostLister() {
     }
 
     const postResponse: PostType[] = (await response.json()).body.Posts;
-    setPosts(postResponse);
+    setPosts(postResponse.reverse());
   };
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function PostLister() {
             text={post.text}
             post_id={post.post_id}
             key={post.post_id}
+            setPosts={setPosts}
           />
         );
       })}

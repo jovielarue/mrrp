@@ -34,8 +34,7 @@ pub fn list_posts() -> Result<Vec<PostReturn>, diesel::result::Error> {
     {
         Ok(post_list) => Ok(post_list),
         Err(err) => Err(err),
-    }
-    .unwrap();
+    }?;
 
     let post_list: Vec<PostReturn> = posts
         .into_iter()

@@ -27,16 +27,23 @@ export default function Post(props: PostWithUsername) {
   };
 
   return (
-    <div className={"w-[25rem]"}>
-      <div className={"flex flex-col bg-primary p-5 text-background"}>
+    <div
+      className={
+        "w-[25rem] flex justify-between bg-primary p-5 text-background"
+      }
+    >
+      <div className={"flex flex-col"}>
         <div className={"flex justify-between"}>
           <p className={"font-bold"}>{props.username}</p>
-          <button className={"bg-accent2 px-2 py-1"} onClick={handleDelete}>
-            delete
-          </button>
         </div>
         <p className={"text-sm"}>{date}</p>
         <p className={"text-lg"}>{props.post.text}</p>
+      </div>
+      <div className={"flex flex-col items-end justify-center gap-2"}>
+        <button className={"bg-accent2 px-2 py-1"} onClick={handleDelete}>
+          delete
+        </button>
+        <p>#{props.post.post_id}</p>
       </div>
     </div>
   );

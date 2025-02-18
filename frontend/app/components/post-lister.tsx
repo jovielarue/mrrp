@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Post from "./post";
+import Post, { PostWithUsername } from "./post";
 import { PostType } from "./post";
 
 export default function PostLister() {
-  const [posts, setPosts] = useState<PostType[]>([]);
+  const [posts, setPosts] = useState<PostWithUsername[]>([]);
 
   const fetchPosts = async () => {
     const response = await fetch("http://localhost:8000/api/list_posts");
@@ -12,8 +12,10 @@ export default function PostLister() {
       return;
     }
 
-    const postResponse: PostType[] = (await response.json()).body.Posts;
-    setPosts(postResponse.reverse());
+    const posts: PostWithUsername[] = (await response.json()).body.PostReturns;
+    console.log(posts[0].post.time);
+
+    setPosts(posts.reverse());
   };
 
   useEffect(() => {
@@ -26,10 +28,8 @@ export default function PostLister() {
         return (
           <Post
             username={post.username}
-            time={post.time}
-            text={post.text}
-            post_id={post.post_id}
-            key={post.post_id}
+            post={post.post}
+            key={post.post.post_id}
             setPosts={setPosts}
           />
         );

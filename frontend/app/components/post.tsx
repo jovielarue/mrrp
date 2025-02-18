@@ -7,11 +7,17 @@ export type PostType = {
   setPosts: Dispatch<SetStateAction<PostType[]>>;
 };
 
-export default function Post(props: PostType) {
-  const date = new Date(props.time).toLocaleString();
+export type PostWithUsername = {
+  post: PostType;
+  username: string;
+  setPosts: Dispatch<SetStateAction<PostWithUsername[]>>;
+};
+
+export default function Post(props: PostWithUsername) {
+  const date = new Date(props.post.time).toLocaleString();
   const handleDelete = async () => {
     const response = await fetch(
-      "http://localhost:8000/api/delete/" + props.post_id,
+      "http://localhost:8000/api/delete/" + props.post.post_id,
     );
     if (response.ok) {
       console.log("Deleted post. Refresh page to see result of deletion.");
@@ -30,7 +36,7 @@ export default function Post(props: PostType) {
           </button>
         </div>
         <p className={"text-sm"}>{date}</p>
-        <p className={"text-lg"}>{props.text}</p>
+        <p className={"text-lg"}>{props.post.text}</p>
       </div>
     </div>
   );

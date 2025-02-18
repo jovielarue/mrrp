@@ -1,12 +1,8 @@
+use crate::user::create::create_user;
+use crate::user::find::find_user_id;
 use core::result::Result;
-use diesel::{insert_into, prelude::*, select};
-use domain::{
-    models::{
-        post::{Post, PostForm, PostReturn},
-        user::User,
-    },
-    schema::users,
-};
+use diesel::{prelude::*, select};
+use domain::models::post::{Post, PostForm, PostReturn};
 use infrastructure::establish_connection;
 use rocket::{
     form::Form,
@@ -33,7 +29,7 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
     println!("{:?}", post);
 
     if post_exists(&post.text) {
-        return Err(rocket::response::status::Conflict(
+        return Err(Conflict(
             "Post already exists. Write something unique!".to_string(),
         ));
     }
@@ -72,37 +68,4 @@ fn post_exists(post_text: &str) -> bool {
     };
 
     return exists;
-}
-
-pub fn find_user_id(input_username: &String) -> Option<User> {
-    use domain::schema::users;
-    use domain::schema::users::dsl::*;
-
-    let found_user = match users::table
-        .filter(username.eq(input_username))
-        .select(User::as_select())
-        .get_result::<User>(&mut establish_connection())
-    {
-        Ok(user) => Some(user),
-        _ => None,
-    };
-
-    found_user
-}
-
-fn create_user(input_username: &str, input_password: String) -> i32 {
-    let user: User = User {
-        username: input_username.to_string(),
-        password: input_password,
-        user_id: 0,
-    };
-    let user_id = match insert_into(users::table)
-        .values(&user)
-        .get_result::<User>(&mut establish_connection())
-    {
-        Ok(u) => u.user_id,
-        _ => -1,
-    };
-
-    user_id
 }

@@ -1,3 +1,4 @@
+use crate::models::user::User;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use rocket::{
@@ -6,13 +7,24 @@ use rocket::{
 };
 
 #[derive(
-    Queryable, Selectable, Insertable, Serialize, Deserialize, Ord, Eq, PartialEq, PartialOrd, Debug,
+    Queryable,
+    Selectable,
+    Insertable,
+    Serialize,
+    Deserialize,
+    Ord,
+    Eq,
+    PartialEq,
+    PartialOrd,
+    Debug,
+    Associations,
 )]
 #[diesel(table_name = crate::schema::posts)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
+#[diesel(belongs_to(User))]
 pub struct Post {
     pub post_id: i32,
-    pub username: String,
+    pub user_id: i32,
     pub text: String,
     pub like_count: Option<i32>,
     pub time: DateTime<Utc>,
@@ -22,7 +34,7 @@ impl Default for Post {
     fn default() -> Self {
         Post {
             post_id: 0,
-            username: "Jovie".to_string(),
+            user_id: 0,
             text: "".to_string(),
             like_count: None,
             time: chrono::offset::Utc::now(),

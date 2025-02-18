@@ -1,4 +1,4 @@
-use domain::models::{photo::Photo, post::Post};
+use domain::models::{post::Post, user::User};
 use rocket::serde::Serialize;
 
 #[derive(Serialize, Debug)]
@@ -6,7 +6,7 @@ pub enum ResponseBody {
     Message(String),
     Post(Post),
     Posts(Vec<Post>),
-    Photo(Photo),
+    User(User),
 }
 
 #[derive(Serialize, Debug)]

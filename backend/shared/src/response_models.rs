@@ -1,11 +1,15 @@
-use domain::models::{post::Post, user::User};
+use domain::models::{
+    post::{Post, PostReturn},
+    user::User,
+};
 use rocket::serde::Serialize;
 
 #[derive(Serialize, Debug)]
 pub enum ResponseBody {
     Message(String),
-    Post(Post),
+    Post(PostReturn),
     Posts(Vec<Post>),
+    PostReturns(Vec<PostReturn>),
     User(User),
 }
 

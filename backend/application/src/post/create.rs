@@ -2,7 +2,7 @@ use core::result::Result;
 use diesel::{insert_into, prelude::*, select};
 use domain::{
     models::{
-        post::{Post, PostForm},
+        post::{Post, PostForm, PostReturn},
         user::User,
     },
     schema::users,
@@ -20,7 +20,7 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
     let post_form = post_form.into_inner();
     let user_id = match find_user_id(&post_form.username) {
         Some(u) => u.user_id,
-        None => create_user(post_form.username, post_form.password),
+        None => create_user(&post_form.username, post_form.password),
     };
 
     let post: Post = Post {
@@ -38,13 +38,18 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
         ));
     }
 
+    let post_return = PostReturn {
+        post: post.clone(),
+        username: post_form.username,
+    };
+
     match diesel::insert_into(posts::table)
         .values(&post)
         .get_result::<Post>(&mut establish_connection())
     {
-        Ok(post) => {
+        Ok(_) => {
             let response = Response {
-                body: ResponseBody::Post(post),
+                body: ResponseBody::Post(post_return),
             };
             println!("Db response - {:?}", response);
             Ok(Created::new("").tagged_body(serde_json::to_string(&response).unwrap()))
@@ -85,9 +90,9 @@ pub fn find_user_id(input_username: &String) -> Option<User> {
     found_user
 }
 
-fn create_user(input_username: String, input_password: String) -> i32 {
+fn create_user(input_username: &str, input_password: String) -> i32 {
     let user: User = User {
-        username: input_username,
+        username: input_username.to_string(),
         password: input_password,
         user_id: 0,
     };

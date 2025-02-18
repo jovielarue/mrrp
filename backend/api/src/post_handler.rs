@@ -1,5 +1,5 @@
 use application::post::{create, delete, read};
-use domain::models::post::{Post, PostForm};
+use domain::models::post::{Post, PostForm, PostReturn};
 use rocket::form::Form;
 use rocket::response::status::{Created, NotFound};
 use rocket::{get, post};
@@ -7,9 +7,9 @@ use shared::response_models::{Response, ResponseBody};
 
 #[get("/list_posts")]
 pub fn list_posts_handler() -> String {
-    let posts: Vec<Post> = read::list_posts().expect("Unable to retrieve posts.");
+    let posts: Vec<PostReturn> = read::list_posts().expect("Unable to retrieve posts.");
     let response = Response {
-        body: ResponseBody::Posts(posts),
+        body: ResponseBody::PostReturns(posts),
     };
 
     serde_json::to_string(&response).unwrap()

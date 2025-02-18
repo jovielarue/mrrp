@@ -18,6 +18,7 @@ use rocket::{
     PartialOrd,
     Debug,
     Associations,
+    Clone,
 )]
 #[diesel(table_name = crate::schema::posts)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
@@ -47,4 +48,10 @@ pub struct PostForm {
     pub username: String,
     pub password: String,
     pub post: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct PostReturn {
+    pub post: Post,
+    pub username: String,
 }

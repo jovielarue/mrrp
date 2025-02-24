@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import Post, { PostWithUsername } from "./post";
-import { PostType } from "./post";
+interface IPostLister {
+  posts: PostWithUsername[];
+  setPosts: Dispatch<SetStateAction<PostWithUsername[]>>;
+}
 
-export default function PostLister() {
-  const [posts, setPosts] = useState<PostWithUsername[]>([]);
-
+export default function PostLister(props: IPostLister) {
   const fetchPosts = async () => {
     const response = await fetch("http://localhost:8000/api/list_posts");
     if (!response.ok) {
@@ -15,25 +16,26 @@ export default function PostLister() {
     const posts: PostWithUsername[] = (await response.json()).body.PostReturns;
     console.log(posts[0].post.time);
 
-    setPosts(posts.reverse());
+    props.setPosts(posts);
   };
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <>
-      {posts.map((post) => {
+    <div className={"flex flex-col gap-2 p-4"}>
+      {props.posts.map((post) => {
         return (
           <Post
-            username={post.username}
-            post={post.post}
+            postWithUsername={post}
             key={post.post.post_id}
-            setPosts={setPosts}
+            setPosts={props.setPosts}
+            posts={props.posts}
           />
         );
       })}
-    </>
+    </div>
   );
 }

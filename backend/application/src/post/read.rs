@@ -38,6 +38,7 @@ pub fn list_posts() -> Result<Vec<PostReturn>, diesel::result::Error> {
 
     let post_list: Vec<PostReturn> = posts
         .into_iter()
+        .rev()
         .map(|post| PostReturn {
             post: post.clone(),
             username: find_user_by_post(&post).username,

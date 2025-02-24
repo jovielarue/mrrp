@@ -34,16 +34,15 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
         ));
     }
 
-    let post_return = PostReturn {
-        post: post.clone(),
-        username: post_form.username,
-    };
-
     match diesel::insert_into(posts::table)
         .values(&post)
         .get_result::<Post>(&mut establish_connection())
     {
-        Ok(_) => {
+        Ok(db_response) => {
+            let post_return: PostReturn = PostReturn {
+                post: db_response,
+                username: post_form.username,
+            };
             let response = Response {
                 body: ResponseBody::Post(post_return),
             };

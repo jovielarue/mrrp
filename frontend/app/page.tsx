@@ -14,7 +14,7 @@ export default function Home() {
       }
     >
       <h1 className={"text-2xl font-bold"}>Portable Media</h1>
-      <PostForm setPosts={setPosts} />
+      <PostForm setPosts={setPosts} posts={posts} />
       <h2 className={"mt-20 text-2xl font-bold text-accent"}>Posts:</h2>
       <PostLister posts={posts} setPosts={setPosts} />
     </div>

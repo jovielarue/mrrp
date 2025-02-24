@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { PostWithUsername } from "./post";
 
 interface IPostFormType {
+  posts: PostWithUsername[];
   setPosts: Dispatch<SetStateAction<PostWithUsername[]>>;
 }
 
@@ -12,16 +13,22 @@ export default function PostForm(props: IPostFormType) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("here");
-    const formData = new FormData(e.target);
-    const response = await fetch("http://localhost:8000/api/new_post", {
-      body: formData,
-      method: "POST",
-    });
-    console.log(response);
-    setUsername("");
-    setPassword("");
-    setPostText("");
+    try {
+      const formData = new FormData(e.target);
+      const response = await fetch("http://localhost:8000/api/new_post", {
+        body: formData,
+        method: "POST",
+      });
+
+      const postResponse = (await response.json()).body.Post;
+      console.log(postResponse);
+      props.setPosts([postResponse, ...props.posts]);
+      setUsername("");
+      setPassword("");
+      setPostText("");
+    } catch (e) {
+      console.error("There was an error creating this post: " + e);
+    }
   };
 
   return (
@@ -29,7 +36,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="username">Username</label>
         <input
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="username"
           type="text"
           placeholder="username goes here..."
@@ -42,7 +51,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="password">Password</label>
         <input
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="password"
           type="password"
           placeholder="password goes here..."
@@ -55,7 +66,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="post">Post text</label>
         <textarea
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="post"
           placeholder="post text goes here..."
           value={postText}
@@ -66,7 +79,7 @@ export default function PostForm(props: IPostFormType) {
       </div>
       <button
         className={
-          "hover:bg-accent2 bg-secondary hover:text-background text-accent py-1 px-3"
+          "hover:bg-accent2 bg-secondary hover:text-background text-accent py-1 px-3 rounded-sm"
         }
         type="submit"
       >

@@ -22,7 +22,7 @@ export default function PostForm(props: IPostFormType) {
 
       const postResponse = (await response.json()).body.Post;
       console.log(postResponse);
-      props.setPosts([...props.posts, postResponse]);
+      props.setPosts([postResponse, ...props.posts]);
       setUsername("");
       setPassword("");
       setPostText("");

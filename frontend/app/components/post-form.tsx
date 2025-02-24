@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { PostWithUsername } from "./post";
 
 interface IPostFormType {
+  posts: PostWithUsername[];
   setPosts: Dispatch<SetStateAction<PostWithUsername[]>>;
 }
 
@@ -12,16 +13,22 @@ export default function PostForm(props: IPostFormType) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("here");
-    const formData = new FormData(e.target);
-    const response = await fetch("http://localhost:8000/api/new_post", {
-      body: formData,
-      method: "POST",
-    });
-    console.log(response);
-    setUsername("");
-    setPassword("");
-    setPostText("");
+    try {
+      const formData = new FormData(e.target);
+      const response = await fetch("http://localhost:8000/api/new_post", {
+        body: formData,
+        method: "POST",
+      });
+
+      const postResponse = (await response.json()).body.Post;
+      console.log(postResponse);
+      props.setPosts([...props.posts, postResponse]);
+      setUsername("");
+      setPassword("");
+      setPostText("");
+    } catch (e) {
+      console.error("There was an error creating this post: " + e);
+    }
   };
 
   return (

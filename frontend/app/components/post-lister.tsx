@@ -7,16 +7,21 @@ interface IPostLister {
 
 export default function PostLister(props: IPostLister) {
   const fetchPosts = async () => {
-    const response = await fetch("http://localhost:8000/api/list_posts");
-    if (!response.ok) {
-      console.error("NOOOO! ERROR GETTING POSTS!");
-      return;
+    try {
+      const response = await fetch("http://localhost:8000/api/list_posts");
+      if (!response.ok) {
+        console.error("NOOOO! ERROR GETTING POSTS!");
+        return;
+      }
+
+      const posts: PostWithUsername[] = (await response.json()).body
+        .PostReturns;
+      console.log(posts);
+
+      props.setPosts(posts);
+    } catch (e) {
+      console.error("There was an error fetching posts: " + e);
     }
-
-    const posts: PostWithUsername[] = (await response.json()).body.PostReturns;
-    console.log(posts[0].post.time);
-
-    props.setPosts(posts);
   };
 
   useEffect(() => {

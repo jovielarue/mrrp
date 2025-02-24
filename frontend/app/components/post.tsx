@@ -45,7 +45,7 @@ export default function Post(props: IPost) {
   return (
     <div
       className={
-        "w-[25rem] flex justify-between bg-primary p-5 text-background"
+        "w-[25rem] flex justify-between bg-primary p-5 text-background rounded-sm"
       }
     >
       <div className={"flex flex-col"}>
@@ -56,7 +56,10 @@ export default function Post(props: IPost) {
         <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
       </div>
       <div className={"flex flex-col items-end justify-center gap-2"}>
-        <button className={"bg-accent2 px-2 py-1"} onClick={handleDelete}>
+        <button
+          className={"bg-accent2 px-2 py-1 rounded-sm"}
+          onClick={handleDelete}
+        >
           delete
         </button>
         <p>#{props.postWithUsername.post.post_id}</p>

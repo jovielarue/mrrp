@@ -36,7 +36,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="username">Username</label>
         <input
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="username"
           type="text"
           placeholder="username goes here..."
@@ -49,7 +51,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="password">Password</label>
         <input
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="password"
           type="password"
           placeholder="password goes here..."
@@ -62,7 +66,9 @@ export default function PostForm(props: IPostFormType) {
       <div className={"flex flex-col"}>
         <label htmlFor="post">Post text</label>
         <textarea
-          className={"bg-secondary text-background placeholder-background p-2"}
+          className={
+            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+          }
           name="post"
           placeholder="post text goes here..."
           value={postText}
@@ -73,7 +79,7 @@ export default function PostForm(props: IPostFormType) {
       </div>
       <button
         className={
-          "hover:bg-accent2 bg-secondary hover:text-background text-accent py-1 px-3"
+          "hover:bg-accent2 bg-secondary hover:text-background text-accent py-1 px-3 rounded-sm"
         }
         type="submit"
       >

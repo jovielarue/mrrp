@@ -5,7 +5,6 @@ use diesel::{prelude::*, select};
 use domain::models::post::{Post, PostForm, PostReturn};
 use infrastructure::establish_connection;
 use rocket::{form::Form, response::status::Created};
-use shared::response_models::{Response, ResponseBody};
 
 pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, ()> {
     use domain::schema::posts;
@@ -13,10 +12,7 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, ()> 
     let post_form = post_form.into_inner();
     let user_id = match find_user_id(&post_form.username) {
         Some(u) => u.user_id,
-        None => create_user(
-            &post_form.username,
-            post_form.password.expect("No password found."),
-        )?,
+        None => -1,
     };
 
     let post: Post = Post {

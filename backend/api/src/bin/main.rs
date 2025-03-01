@@ -11,8 +11,8 @@ fn rocket() -> Rocket<Build> {
                 post_handler::list_posts_handler,
                 post_handler::list_post_handler,
                 post_handler::create_post_handler,
-                //post_handler::upload_media_handler,
                 post_handler::delete_post_handler,
+                post_handler::edit_post_handler,
             ],
         )
         .mount(

@@ -24,7 +24,7 @@ interface IPost {
 
 export default function Post(props: IPost) {
   const date = new Date(props.postWithUsername.post.time).toLocaleString();
-  const { handleGetUsername } = useContext(UserContext);
+  const { handleGetUsername, handleGetAuthToken } = useContext(UserContext);
   const username = handleGetUsername();
   const [newText, setNewText] = useState<string>("");
 
@@ -52,8 +52,9 @@ export default function Post(props: IPost) {
 
   const handleSave = async () => {
     const postData = new FormData();
-    postData.set("post_id", props.postWithUsername.post.post_id);
-    postData.set("new_text", newText);
+    postData.set("username", handleGetUsername());
+    postData.set("jwt", handleGetAuthToken());
+    postData.set("post", newText);
 
     try {
       const response = await fetch(

@@ -47,7 +47,6 @@ impl Default for Post {
 pub struct PostForm {
     pub username: String,
     pub jwt: Option<String>,
-    pub password: Option<String>,
     pub post: String,
 }
 

@@ -3,7 +3,7 @@ use std::{collections::BTreeMap, env, io::Error};
 
 use domain::models::user::{User, UserForm};
 use dotenvy::dotenv;
-use jwt::SignWithKey;
+use jwt::{SignWithKey, VerifyWithKey};
 use rocket::{form::Form, post};
 use sha2::{Digest, Sha256};
 
@@ -45,7 +45,7 @@ pub fn sign_up(
 
     let user_id = application::user::create::create_user(&username, hashed);
 
-    if user_id != -1 {
+    if user_id != Ok(-1) {
         return Ok(serde_json::to_string(
             &generate_jwt(&username).expect("Unable to generate jwt."),
         )
@@ -57,7 +57,14 @@ pub fn sign_up(
     }
 }
 
-fn generate_jwt(username: &str) -> Result<String, GenerateJwtErrorType> {
+#[derive(Debug)]
+pub enum JwtErrorType {
+    HmacError,
+    JwtError,
+    NoClaims,
+}
+
+fn generate_jwt(username: &str) -> Result<String, JwtErrorType> {
     dotenv().expect("Unable to load dotenv file.");
     let private_key = env::var("JWT_KEY").expect("Unable to load the JWT_KEY env variable.");
 
@@ -73,8 +80,28 @@ fn generate_jwt(username: &str) -> Result<String, GenerateJwtErrorType> {
     Ok(token_str)
 }
 
-#[derive(Debug)]
-enum GenerateJwtErrorType {
-    //HmacError,
-    //JwtError,
+pub fn verify_jwt(token: &str, username: &str) -> Result<(), JwtErrorType> {
+    dotenv().expect("Unable to load dotenv file.");
+    let private_key = env::var("JWT_KEY").expect("Unable to load the JWT_KEY env variable.");
+
+    let key: Hmac<Sha256> =
+        Hmac::new_from_slice(&private_key.as_bytes()).expect("Unable to generate Hmac slice.");
+
+    let token_str = token;
+    let claims: BTreeMap<String, String> = match token_str.verify_with_key(&key) {
+        Ok(claims) => claims,
+        Err(_) => BTreeMap::new(),
+    };
+    println!("{:?}", claims);
+    println!(
+        "{:?}, {:?}",
+        claims.get("username"),
+        Some(&username.to_string())
+    );
+
+    if claims.get("username") == Some(&username.to_string()) {
+        Ok(())
+    } else {
+        Err(JwtErrorType::NoClaims)
+    }
 }

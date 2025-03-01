@@ -1,31 +1,40 @@
 "use client";
-import {
-  createContext,
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useState,
-} from "react";
+import { createContext, ReactNode } from "react";
 
 interface UserContextType {
-  username: string;
-  setContextUsername: Dispatch<SetStateAction<string>>;
-  authToken: string;
-  setAuthToken: Dispatch<SetStateAction<string>>;
+  handleSetAuthToken: (token: string) => void;
+  handleGetAuthToken: () => string;
+  handleSetUsername: (username: string) => void;
+  handleGetUsername: () => string;
 }
 export const UserContext = createContext({} as UserContextType);
 
 export default function UserContextProvider(props: { children: ReactNode }) {
-  const [username, setContextUsername] = useState("");
-  const [authToken, setAuthToken] = useState("");
+  const handleSetAuthToken = (token: string) => {
+    localStorage.setItem("jwt", token);
+  };
+
+  const handleGetAuthToken = () => {
+    const token = localStorage.getItem("jwt");
+    return token || "";
+  };
+
+  const handleSetUsername = (username: string) => {
+    localStorage.setItem("username", username);
+  };
+
+  const handleGetUsername = () => {
+    const username = localStorage.getItem("username");
+    return username || "";
+  };
 
   return (
     <UserContext.Provider
       value={{
-        username,
-        setContextUsername,
-        authToken,
-        setAuthToken,
+        handleSetAuthToken,
+        handleGetAuthToken,
+        handleSetUsername,
+        handleGetUsername,
       }}
     >
       {props.children}

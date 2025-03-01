@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { PostWithUsername } from "./post";
+import { UserContext } from "../contexts/usercontext";
 
 interface IPostFormType {
   posts: PostWithUsername[];
@@ -8,19 +9,28 @@ interface IPostFormType {
 
 export default function PostForm(props: IPostFormType) {
   const [postText, setPostText] = useState<string>("");
+  const { handleGetUsername, handleGetAuthToken } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData(e.target);
+      const postData = new FormData();
+      postData.set("post", postText);
+      postData.set("username", handleGetUsername());
+      postData.set("jwt", handleGetAuthToken());
+
+      if (postData.get("jwt") === "" || postData.get("username") === "") {
+        return;
+      }
+
       const response = await fetch("http://localhost:8000/api/new_post", {
-        body: formData,
+        body: postData,
         method: "POST",
       });
 
-      const postResponse = (await response.json()).body.Post;
-      console.log(postResponse);
+      const postResponse = await response.json();
       props.setPosts([postResponse, ...props.posts]);
+
       setPostText("");
     } catch (e) {
       console.error("There was an error creating this post: " + e);

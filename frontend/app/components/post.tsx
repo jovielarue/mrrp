@@ -62,7 +62,7 @@ export default function Post(props: IPost) {
         >
           delete
         </button>
-        <p>mrrp #{props.postWithUsername.post.post_id}</p>
+        <p>mrrp #{props.postWithUsername.post_id}</p>
       </div>
     </div>
   );

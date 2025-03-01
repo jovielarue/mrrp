@@ -5,6 +5,8 @@ use rocket::response::status::{Created, NotFound};
 use rocket::{get, post};
 use shared::response_models::{Response, ResponseBody};
 
+use crate::auth_handler::verify_jwt;
+
 #[get("/list_posts")]
 pub fn list_posts_handler() -> String {
     let posts: Vec<PostReturn> = read::list_posts().expect("Unable to retrieve posts.");
@@ -28,9 +30,24 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 #[post("/new_post", format = "multipart/form-data", data = "<post>")]
 pub fn create_post_handler(
     post: Form<PostForm>,
-) -> Result<Created<String>, rocket::response::status::Conflict<String>> {
-    println!("{:?}", post);
-    create::create_post::<Post>(post)
+) -> Result<Created<String>, rocket::response::status::Unauthorized<String>> {
+    println!("{}", post.username);
+    let verified = match verify_jwt(post.jwt.as_ref().expect("No JWT supplied."), &post.username) {
+        Ok(_) => true,
+        Err(_) => false,
+    };
+    println!("{verified}");
+    println!("{:?}", post.jwt);
+
+    if verified == true {
+        let post = create::create_post::<Post>(post);
+        let post = post.expect("Unable to unwrap post");
+        Ok(post)
+    } else {
+        Err(rocket::response::status::Unauthorized::<String>(
+            "You are unauthorized.".to_string(),
+        ))
+    }
 }
 
 //#[post("/upload", format = "multipart/form-data", data = "<media>")]

@@ -46,7 +46,8 @@ impl Default for Post {
 #[derive(FromForm, Debug)]
 pub struct PostForm {
     pub username: String,
-    pub password: String,
+    pub jwt: Option<String>,
+    pub password: Option<String>,
     pub post: String,
 }
 

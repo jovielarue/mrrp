@@ -10,7 +10,7 @@ export default function Page() {
   const [alert, setAlert] = useState<string>("");
   const [username, setUsername] = useState<string>("");
 
-  const { setContextUsername, setAuthToken } = useContext(UserContext);
+  const { handleSetUsername, handleSetAuthToken } = useContext(UserContext);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -31,7 +31,7 @@ export default function Page() {
       console.log(res);
       const response = await res.json();
       console.log(response);
-      setAuthToken(response);
+      handleSetAuthToken(response);
 
       if (!res.ok) {
         setAlert(
@@ -46,7 +46,7 @@ export default function Page() {
         if (jwtKey) {
           const { payload } = await jose.jwtVerify(response, jwtKey);
           console.log(payload);
-          setContextUsername(payload.username as string);
+          handleSetUsername(payload.username as string);
           router.push("/");
         } else {
           setAlert("Next Public JWT key is borked.");

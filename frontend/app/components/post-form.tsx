@@ -7,8 +7,6 @@ interface IPostFormType {
 }
 
 export default function PostForm(props: IPostFormType) {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [postText, setPostText] = useState<string>("");
 
   const handleSubmit = async (e) => {
@@ -23,8 +21,6 @@ export default function PostForm(props: IPostFormType) {
       const postResponse = (await response.json()).body.Post;
       console.log(postResponse);
       props.setPosts([postResponse, ...props.posts]);
-      setUsername("");
-      setPassword("");
       setPostText("");
     } catch (e) {
       console.error("There was an error creating this post: " + e);
@@ -33,37 +29,7 @@ export default function PostForm(props: IPostFormType) {
 
   return (
     <form className={"flex flex-col gap-3"} onSubmit={(e) => handleSubmit(e)}>
-      <div className={"flex flex-col"}>
-        <label htmlFor="username">Username</label>
-        <input
-          className={
-            "bg-secondary text-background placeholder-background p-2 rounded-sm"
-          }
-          name="username"
-          type="text"
-          placeholder="username goes here..."
-          value={username}
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-      </div>
-      <div className={"flex flex-col"}>
-        <label htmlFor="password">Password</label>
-        <input
-          className={
-            "bg-secondary text-background placeholder-background p-2 rounded-sm"
-          }
-          name="password"
-          type="password"
-          placeholder="password goes here..."
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-      </div>
-      <div className={"flex flex-col"}>
+      <div className={"flex flex-col gap-1"}>
         <label htmlFor="post">Post text</label>
         <textarea
           className={

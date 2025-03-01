@@ -28,6 +28,7 @@ export default function PostLister(props: IPostLister) {
   };
 
   const handleEdit = (id: string, toEdit: boolean) => {
+    console.log(id);
     setEditing(toEdit ? id : "");
   };
 

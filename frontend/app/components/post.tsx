@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { UserContext } from "../contexts/usercontext";
 export type PostType = {
   username: string;
@@ -26,6 +26,7 @@ export default function Post(props: IPost) {
   const date = new Date(props.postWithUsername.post.time).toLocaleString();
   const { handleGetUsername } = useContext(UserContext);
   const username = handleGetUsername();
+  const [newText, setNewText] = useState<string>("");
 
   const handleDelete = async () => {
     try {
@@ -34,7 +35,7 @@ export default function Post(props: IPost) {
           props.postWithUsername.post.post_id,
       );
       if (response.ok) {
-        console.log("Deleted post. Refresh page to see result of deletion.");
+        console.log("Deleted post.");
         const postsWithoutDeleted = props.posts.filter(
           (postWithUsername) =>
             postWithUsername.post.post_id !==
@@ -49,46 +50,124 @@ export default function Post(props: IPost) {
     }
   };
 
-  return (
-    <div
-      className={
-        "w-[25rem] flex justify-between bg-primary p-5 text-background rounded-sm"
+  const handleSave = async () => {
+    const postData = new FormData();
+    postData.set("post_id", props.postWithUsername.post.post_id);
+    postData.set("new_text", newText);
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/edit/" + props.postWithUsername.post.post_id,
+        { method: "PUT", body: postData },
+      );
+      if (response.ok) {
+        console.log("Edited post.");
+        const postsWithEdited = props.posts.map((postWithUsername) => {
+          if (
+            postWithUsername.post.post_id ===
+            props.postWithUsername.post.post_id
+          ) {
+            return {
+              ...postWithUsername,
+              post: { ...postWithUsername.post, text: newText },
+            };
+          } else {
+            return postWithUsername;
+          }
+        });
+        props.setPosts(postsWithEdited);
+        props.handleEdit(props.postWithUsername.post.post_id, !props.editing);
+      } else {
+        console.error("Error editing post.");
       }
-    >
-      <div className={"flex flex-col"}>
-        <div className={"flex justify-between"}>
-          <p className={"font-bold"}>{props.postWithUsername.username}</p>
-        </div>
-        <p className={"text-sm"}>{date}</p>
-        <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
-      </div>
-      <div className={"flex flex-col items-end justify-start gap-2"}>
-        {props.editing ? "hello" : "helllllll"}
-        {username === props.postWithUsername.username && (
-          <>
-            <button
+    } catch (e) {
+      console.error("There was an error deleting the post: " + e);
+    }
+  };
+
+  return (
+    <>
+      {props.editing ? (
+        <div
+          className={
+            "w-[25rem] flex justify-between bg-secondary p-5 text-accent rounded-sm"
+          }
+        >
+          <div className={"flex flex-col gap-2"}>
+            <div className={"flex justify-between"}>
+              <p className={"font-bold"}>{props.postWithUsername.username}</p>
+            </div>
+            <p className={"text-sm"}>{date}</p>
+            <input
+              value={newText}
+              onChange={(e) => setNewText(e.target.value)}
               className={
-                "bg-background text-primary px-2 py-1 rounded-sm w-full"
+                "text-lg bg-background h-full placeholder:text-primary border-background border-2 rounded-sm flex items-center justify-center pl-2"
               }
-              onClick={() =>
-                props.handleEdit(
-                  props.postWithUsername.post.post_id,
-                  !props.editing,
-                )
-              }
-            >
-              edit
-            </button>
-            <button
-              className={"bg-accent2 px-2 py-1 rounded-sm"}
-              onClick={handleDelete}
-            >
-              delete
-            </button>
-          </>
-        )}
-        <p className={"text-sm"}>mrrp #{props.postWithUsername.post.post_id}</p>
-      </div>
-    </div>
+              placeholder="new mrrp goes here..."
+            />
+          </div>
+          <div className={"flex flex-col items-end justify-start gap-2"}>
+            {username === props.postWithUsername.username && (
+              <>
+                <button
+                  className={
+                    "bg-background text-primary px-2 py-1 rounded-sm w-full"
+                  }
+                  onClick={handleSave}
+                >
+                  save
+                </button>
+                <button
+                  className={"bg-accent2 px-2 py-1 rounded-sm"}
+                  onClick={handleDelete}
+                >
+                  delete
+                </button>
+              </>
+            )}
+            <p className={"text-sm"}>
+              mrrp #{props.postWithUsername.post.post_id}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div
+          className={
+            "w-[25rem] flex justify-between bg-primary p-5 text-background rounded-sm"
+          }
+        >
+          <div className={"flex flex-col"}>
+            <div className={"flex justify-between"}>
+              <p className={"font-bold"}>{props.postWithUsername.username}</p>
+            </div>
+            <p className={"text-sm"}>{date}</p>
+            <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
+          </div>
+          <div className={"flex flex-col items-end justify-start gap-2"}>
+            {username === props.postWithUsername.username && (
+              <>
+                <button
+                  className={
+                    "bg-background text-primary px-2 py-1 rounded-sm w-full"
+                  }
+                  onClick={() =>
+                    props.handleEdit(
+                      props.postWithUsername.post.post_id,
+                      !props.editing,
+                    )
+                  }
+                >
+                  edit
+                </button>
+              </>
+            )}
+            <p className={"text-sm"}>
+              mrrp #{props.postWithUsername.post.post_id}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,6 +1,8 @@
-# Portable Media
+# mrrp
 
-A text-only (for now) social media that you can run anywhere docker runs.
+## Mega-Robust Rambling Platform
+
+A text-only (for now) social media platform written with React, Rust, and Postgres that you can run anywhere docker runs.
 
 ## Dependencies for Running Locally
 

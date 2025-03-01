@@ -1,3 +1,4 @@
+"use client";
 import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { PostWithUsername } from "./post";
 import { UserContext } from "../contexts/usercontext";

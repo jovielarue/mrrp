@@ -1,4 +1,6 @@
-import { Dispatch, SetStateAction } from "react";
+"use client";
+import { Dispatch, SetStateAction, useContext } from "react";
+import { UserContext } from "../contexts/usercontext";
 export type PostType = {
   username: string;
   time: string;
@@ -16,10 +18,15 @@ interface IPost {
   postWithUsername: PostWithUsername;
   posts: PostWithUsername[];
   setPosts: Dispatch<SetStateAction<PostWithUsername[]>>;
+  handleEdit: (id: string, toEdit: boolean) => void;
+  editing: boolean;
 }
 
 export default function Post(props: IPost) {
   const date = new Date(props.postWithUsername.post.time).toLocaleString();
+  const { handleGetUsername } = useContext(UserContext);
+  const username = handleGetUsername();
+
   const handleDelete = async () => {
     try {
       const response = await fetch(
@@ -55,14 +62,32 @@ export default function Post(props: IPost) {
         <p className={"text-sm"}>{date}</p>
         <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
       </div>
-      <div className={"flex flex-col items-end justify-center gap-2"}>
-        <button
-          className={"bg-accent2 px-2 py-1 rounded-sm"}
-          onClick={handleDelete}
-        >
-          delete
-        </button>
-        <p>mrrp #{props.postWithUsername.post.post_id}</p>
+      <div className={"flex flex-col items-end justify-start gap-2"}>
+        {props.editing ? "hello" : "helllllll"}
+        {username === props.postWithUsername.username && (
+          <>
+            <button
+              className={
+                "bg-background text-primary px-2 py-1 rounded-sm w-full"
+              }
+              onClick={() =>
+                props.handleEdit(
+                  props.postWithUsername.post.post_id,
+                  !props.editing,
+                )
+              }
+            >
+              edit
+            </button>
+            <button
+              className={"bg-accent2 px-2 py-1 rounded-sm"}
+              onClick={handleDelete}
+            >
+              delete
+            </button>
+          </>
+        )}
+        <p className={"text-sm"}>mrrp #{props.postWithUsername.post.post_id}</p>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+"use client";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Post, { PostWithUsername } from "./post";
 interface IPostLister {
   posts: PostWithUsername[];
@@ -6,6 +7,8 @@ interface IPostLister {
 }
 
 export default function PostLister(props: IPostLister) {
+  const [editing, setEditing] = useState<string>("");
+
   const fetchPosts = async () => {
     try {
       const response = await fetch("http://localhost:8000/api/list_posts");
@@ -24,6 +27,10 @@ export default function PostLister(props: IPostLister) {
     }
   };
 
+  const handleEdit = (id: string, toEdit: boolean) => {
+    setEditing(toEdit ? id : "");
+  };
+
   useEffect(() => {
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,6 +45,8 @@ export default function PostLister(props: IPostLister) {
             key={post.post.post_id}
             setPosts={props.setPosts}
             posts={props.posts}
+            handleEdit={handleEdit}
+            editing={post.post.post_id === editing ? true : false}
           />
         );
       })}

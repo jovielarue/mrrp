@@ -1,4 +1,4 @@
-use application::post::{create, delete, read};
+use application::post::{create, delete, edit, read};
 use domain::models::post::{Post, PostForm, PostReturn};
 use rocket::form::Form;
 use rocket::response::status::{Created, NotFound};
@@ -44,6 +44,27 @@ pub fn delete_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
     let posts = delete::delete_post(post_id)?;
     let response = Response {
         body: ResponseBody::Posts(posts),
+    };
+
+    Ok(serde_json::to_string(&response).unwrap())
+}
+
+#[post(
+    "/edit/<post_id>",
+    format = "multipart/form-data",
+    data = "<post_form>"
+)]
+pub fn edit_post_handler(
+    post_form: Form<PostForm>,
+    post_id: i32,
+) -> Result<String, NotFound<String>> {
+    let post_return = read::list_post(post_id)?;
+    let post_id = post_return.post.post_id;
+
+    let new_post = edit::edit_post(post_id, &post_form.post)?;
+
+    let response = Response {
+        body: ResponseBody::Post(new_post),
     };
 
     Ok(serde_json::to_string(&response).unwrap())

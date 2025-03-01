@@ -23,6 +23,7 @@ export default function Page() {
       );
 
       console.log(res);
+      console.log(await res.json());
 
       if (!res.ok) {
         setAlert(

@@ -1,4 +1,9 @@
-use domain::models::user::UserForm;
+use hmac::{Hmac, Mac};
+use std::{collections::BTreeMap, env, io::Error};
+
+use domain::models::user::{User, UserForm};
+use dotenvy::dotenv;
+use jwt::SignWithKey;
 use rocket::{form::Form, post};
 use sha2::{Digest, Sha256};
 
@@ -15,7 +20,10 @@ pub fn authenticate(
     if let Some(user) = user {
         println!("{}", user.password);
         if hashed == &user.password {
-            return Ok(serde_json::to_string("jwt").unwrap());
+            return Ok(serde_json::to_string(
+                &generate_jwt(&user.username).expect("Unable to generate jwt."),
+            )
+            .unwrap());
         }
     }
 
@@ -38,10 +46,35 @@ pub fn sign_up(
     let user_id = application::user::create::create_user(&username, hashed);
 
     if user_id != -1 {
-        return Ok(serde_json::to_string("jwt").unwrap());
+        return Ok(serde_json::to_string(
+            &generate_jwt(&username).expect("Unable to generate jwt."),
+        )
+        .unwrap());
     } else {
         Err(rocket::response::status::Unauthorized::<String>(
             serde_json::to_string("You are not authorized.").unwrap(),
         ))
     }
+}
+
+fn generate_jwt(username: &str) -> Result<String, GenerateJwtErrorType> {
+    dotenv().expect("Unable to load dotenv file.");
+    let private_key = env::var("JWT_KEY").expect("Unable to load the JWT_KEY env variable.");
+
+    let key: Hmac<Sha256> =
+        Hmac::new_from_slice(&private_key.as_bytes()).expect("Unable to generate Hmac slice.");
+
+    let mut claims = BTreeMap::new();
+    claims.insert("username", username);
+    let token_str = claims
+        .sign_with_key(&key)
+        .expect("Unable to generate token string.");
+
+    Ok(token_str)
+}
+
+#[derive(Debug)]
+enum GenerateJwtErrorType {
+    //HmacError,
+    //JwtError,
 }

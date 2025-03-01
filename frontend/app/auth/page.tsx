@@ -1,11 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import * as jose from "jose";
+import { UserContext } from "../contexts/usercontext";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [login, setLogin] = useState<boolean>(true);
   const [alert, setAlert] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+
+  const { setContextUsername, setAuthToken } = useContext(UserContext);
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,13 +29,30 @@ export default function Page() {
       );
 
       console.log(res);
-      console.log(await res.json());
+      const response = await res.json();
+      console.log(response);
+      setAuthToken(response);
 
       if (!res.ok) {
         setAlert(
           "There was an error authenticating your user. Here's the issue: " +
             res.statusText,
         );
+      }
+
+      const jwtKey = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_KEY);
+
+      try {
+        if (jwtKey) {
+          const { payload } = await jose.jwtVerify(response, jwtKey);
+          console.log(payload);
+          setContextUsername(payload.username as string);
+          router.push("/");
+        } else {
+          setAlert("Next Public JWT key is borked.");
+        }
+      } catch (e) {
+        console.log(e);
       }
 
       setUsername("");

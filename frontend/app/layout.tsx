@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 import "./globals.css";
+import UserContextProvider from "./contexts/usercontext";
 
 const ubuntu = Ubuntu({
   weight: "400",
@@ -19,11 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${ubuntu.className} antialiased flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent min-h-screen w-screen`}
-      >
-        {children}
-      </body>
+      <UserContextProvider>
+        <body
+          className={`${ubuntu.className} antialiased flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent min-h-screen w-screen`}
+        >
+          {children}
+        </body>
+      </UserContextProvider>
     </html>
   );
 }

@@ -6,7 +6,7 @@ use rocket::response::status::NotFound;
 pub fn edit_post(id: i32, new_post_text: &str) -> Result<PostReturn, NotFound<String>> {
     use domain::schema::posts::dsl::*;
 
-    let _ = diesel::update(posts)
+    let _ = diesel::update(posts.filter(post_id.eq(id)))
         .set(text.eq(new_post_text))
         .execute(&mut establish_connection());
 

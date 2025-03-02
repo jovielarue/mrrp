@@ -45,7 +45,7 @@ END;
 $update_post_id$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER t_update_post_id
-BEFORE INSERT OR UPDATE ON posts
+BEFORE INSERT ON posts
 FOR EACH ROW
 EXECUTE FUNCTION fn_update_post_id();
 

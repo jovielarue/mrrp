@@ -4,19 +4,15 @@ use core::result::Result;
 use diesel::{prelude::*, select};
 use domain::models::post::{Post, PostForm, PostReturn};
 use infrastructure::establish_connection;
-use rocket::{
-    form::Form,
-    response::status::{Conflict, Created},
-};
-use shared::response_models::{Response, ResponseBody};
+use rocket::{form::Form, response::status::Created};
 
-pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conflict<String>> {
+pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, ()> {
     use domain::schema::posts;
 
     let post_form = post_form.into_inner();
     let user_id = match find_user_id(&post_form.username) {
         Some(u) => u.user_id,
-        None => create_user(&post_form.username, post_form.password),
+        None => -1,
     };
 
     let post: Post = Post {
@@ -28,12 +24,6 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
     };
     println!("{:?}", post);
 
-    if post_exists(&post.text) {
-        return Err(Conflict(
-            "Post already exists. Write something unique!".to_string(),
-        ));
-    }
-
     match diesel::insert_into(posts::table)
         .values(&post)
         .get_result::<Post>(&mut establish_connection())
@@ -43,28 +33,10 @@ pub fn create_post<T>(post_form: Form<PostForm>) -> Result<Created<String>, Conf
                 post: db_response,
                 username: post_form.username,
             };
-            let response = Response {
-                body: ResponseBody::Post(post_return),
-            };
-            println!("Db response - {:?}", response);
-            Ok(Created::new("").tagged_body(serde_json::to_string(&response).unwrap()))
+            println!("Db response - {:?}", post_return);
+            Ok(Created::new("").tagged_body(serde_json::to_string(&post_return).unwrap()))
         }
         // TODO: this should not be a conflict 409. Fix this!!
-        Err(_) => Err(Conflict("Something went wrong.".to_string())),
+        Err(_) => Err(()),
     }
-}
-
-fn post_exists(post_text: &str) -> bool {
-    use diesel::dsl::exists;
-    use domain::schema::posts;
-    use domain::schema::posts::dsl::*;
-
-    let exists = match select(exists(posts::table.filter(text.eq(post_text))))
-        .get_result::<bool>(&mut establish_connection())
-    {
-        Ok(boolean) => boolean,
-        Err(_) => true,
-    };
-
-    return exists;
 }

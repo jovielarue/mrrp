@@ -14,7 +14,10 @@ pub fn list_post(post_id: i32) -> Result<PostReturn, NotFound<String>> {
         .first::<Post>(&mut establish_connection())
     {
         Ok(post) => Some(post),
-        Err(_) => None,
+        Err(e) => {
+            eprintln!("{e}");
+            None
+        }
     }
     .expect("Unable to find post by post id.");
 

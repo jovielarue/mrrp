@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PostLister from "./components/post-lister";
 import PostForm from "./components/post-form";
 import { PostWithUsername } from "./components/post";
@@ -11,9 +11,12 @@ export default function Home() {
   const { handleGetUsername } = useContext(UserContext);
   const router = useRouter();
 
-  if (handleGetUsername() === "") {
-    router.push("/");
-  }
+  useEffect(() => {
+    console.log(handleGetUsername());
+    if (handleGetUsername() === "") {
+      router.push("/auth");
+    }
+  }, []);
 
   return (
     <>

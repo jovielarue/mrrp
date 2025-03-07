@@ -13,13 +13,12 @@ pub fn list_post(post_id: i32) -> Result<PostReturn, NotFound<String>> {
         .find(post_id)
         .first::<Post>(&mut establish_connection())
     {
-        Ok(post) => Some(post),
+        Ok(post) => Ok(post),
         Err(e) => {
             eprintln!("{e}");
-            None
+            Err(NotFound("Post not found.".to_string()))
         }
-    }
-    .expect("Unable to find post by post id.");
+    }?;
 
     let found_user = find_user_by_post(&post);
     Ok(PostReturn {

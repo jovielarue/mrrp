@@ -2,7 +2,7 @@ use application::post::{create, delete, edit, read};
 use domain::models::post::{Post, PostForm, PostReturn};
 use rocket::form::Form;
 use rocket::response::status::{Created, NotFound};
-use rocket::{get, post, put};
+use rocket::{delete, get, post, put};
 use shared::response_models::{Response, ResponseBody};
 
 use crate::auth_handler::verify_jwt;
@@ -56,7 +56,7 @@ pub fn create_post_handler(
 //    //upload::upload_media(media)
 //}
 
-#[get("/delete/<post_id>")]
+#[delete("/delete/<post_id>")]
 pub fn delete_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
     let posts = delete::delete_post(post_id)?;
     let response = Response {

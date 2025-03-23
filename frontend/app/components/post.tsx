@@ -33,6 +33,7 @@ export default function Post(props: IPost) {
       const response = await fetch(
         "http://localhost:8000/api/delete/" +
           props.postWithUsername.post.post_id,
+        { method: "DELETE" },
       );
       if (response.ok) {
         console.log("Deleted post.");

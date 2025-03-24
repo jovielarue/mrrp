@@ -52,7 +52,7 @@ export default function Post(props: IPost) {
   };
 
   const handleSave = async () => {
-    if (newText === "") {
+    if (newText === props.postWithUsername.post.text) {
       props.handleEdit(props.postWithUsername.post.post_id, !props.editing);
       return;
     }
@@ -106,20 +106,16 @@ export default function Post(props: IPost) {
               <p className={"font-bold"}>{props.postWithUsername.username}</p>
             </div>
             <p className={"text-sm"}>{date}</p>
-            <div className={"bg-background flex flex-col p-2 rounded-md"}>
-              <p className={"text-sm text-secondary"}>old mrrp: </p>
-              <p className={"text-lg text-accent"}>
-                {props.postWithUsername.post.text}
-              </p>
-            </div>
-            <input
+            <hr className={"border-1 border-accent w-full my-2"} />
+            <textarea
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
               className={
                 "text-lg bg-background h-full placeholder:text-primary border-background border-2 rounded-sm flex items-center justify-center pl-2 hover:border-accent"
               }
-              placeholder="new mrrp goes here..."
-            />
+            >
+              {props.postWithUsername.post.text}
+            </textarea>
           </div>
           <div
             className={"flex flex-col items-end justify-start gap-2 w-[8ch]"}
@@ -155,11 +151,12 @@ export default function Post(props: IPost) {
             "w-[25rem] flex justify-between gap-5 bg-primary p-5 text-background rounded-sm"
           }
         >
-          <div className={"flex flex-col"}>
+          <div className={"flex flex-col w-full"}>
             <div className={"flex justify-between"}>
               <p className={"font-bold"}>{props.postWithUsername.username}</p>
             </div>
             <p className={"text-sm"}>{date}</p>
+            <hr className={"border-1 border-background w-full my-2"} />
             <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
           </div>
           <div className={"flex flex-col items-end justify-start gap-2"}>
@@ -169,12 +166,13 @@ export default function Post(props: IPost) {
                   className={
                     "bg-background text-primary px-2 py-1 rounded-sm hover:text-background hover:bg-accent w-[8ch]"
                   }
-                  onClick={() =>
+                  onClick={() => {
                     props.handleEdit(
                       props.postWithUsername.post.post_id,
                       !props.editing,
-                    )
-                  }
+                    );
+                    setNewText(props.postWithUsername.post.text);
+                  }}
                 >
                   edit
                 </button>

@@ -52,6 +52,11 @@ export default function Post(props: IPost) {
   };
 
   const handleSave = async () => {
+    if (newText === "") {
+      props.handleEdit(props.postWithUsername.post.post_id, !props.editing);
+      return;
+    }
+
     const postData = new FormData();
     postData.set("username", handleGetUsername());
     postData.set("jwt", handleGetAuthToken());
@@ -79,6 +84,7 @@ export default function Post(props: IPost) {
         });
         props.setPosts(postsWithEdited);
         props.handleEdit(props.postWithUsername.post.post_id, !props.editing);
+        setNewText("");
       } else {
         console.error("Error editing post.");
       }
@@ -92,7 +98,7 @@ export default function Post(props: IPost) {
       {props.editing ? (
         <div
           className={
-            "w-[25rem] flex justify-between bg-secondary p-5 text-accent rounded-sm"
+            "w-[25rem] flex justify-between gap-5 bg-secondary p-5 text-accent rounded-sm"
           }
         >
           <div className={"flex flex-col gap-2"}>
@@ -100,28 +106,38 @@ export default function Post(props: IPost) {
               <p className={"font-bold"}>{props.postWithUsername.username}</p>
             </div>
             <p className={"text-sm"}>{date}</p>
+            <div className={"bg-background flex flex-col p-2 rounded-md"}>
+              <p className={"text-sm text-secondary"}>old mrrp: </p>
+              <p className={"text-lg text-accent"}>
+                {props.postWithUsername.post.text}
+              </p>
+            </div>
             <input
               value={newText}
               onChange={(e) => setNewText(e.target.value)}
               className={
-                "text-lg bg-background h-full placeholder:text-primary border-background border-2 rounded-sm flex items-center justify-center pl-2"
+                "text-lg bg-background h-full placeholder:text-primary border-background border-2 rounded-sm flex items-center justify-center pl-2 hover:border-accent"
               }
               placeholder="new mrrp goes here..."
             />
           </div>
-          <div className={"flex flex-col items-end justify-start gap-2"}>
+          <div
+            className={"flex flex-col items-end justify-start gap-2 w-[8ch]"}
+          >
             {username === props.postWithUsername.username && (
               <>
                 <button
                   className={
-                    "bg-background text-primary px-2 py-1 rounded-sm w-full"
+                    "bg-background text-primary px-2 py-1 rounded-sm w-full hover:text-background hover:bg-accent"
                   }
                   onClick={handleSave}
                 >
                   save
                 </button>
                 <button
-                  className={"bg-accent2 px-2 py-1 rounded-sm"}
+                  className={
+                    "bg-accent2 px-2 py-1 rounded-sm w-[8ch] hover:text-accent2 hover:bg-accent"
+                  }
                   onClick={handleDelete}
                 >
                   delete
@@ -136,7 +152,7 @@ export default function Post(props: IPost) {
       ) : (
         <div
           className={
-            "w-[25rem] flex justify-between bg-primary p-5 text-background rounded-sm"
+            "w-[25rem] flex justify-between gap-5 bg-primary p-5 text-background rounded-sm"
           }
         >
           <div className={"flex flex-col"}>
@@ -151,7 +167,7 @@ export default function Post(props: IPost) {
               <>
                 <button
                   className={
-                    "bg-background text-primary px-2 py-1 rounded-sm w-full"
+                    "bg-background text-primary px-2 py-1 rounded-sm hover:text-background hover:bg-accent w-[8ch]"
                   }
                   onClick={() =>
                     props.handleEdit(

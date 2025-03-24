@@ -56,7 +56,7 @@ export default function PostForm(props: IPostFormType) {
       </div>
       <button
         className={
-          "hover:bg-accent2 bg-secondary hover:text-background text-accent py-1 px-3 rounded-sm"
+          "hover:bg-accent bg-secondary hover:text-background text-accent py-1 px-3 rounded-sm"
         }
         type="submit"
       >

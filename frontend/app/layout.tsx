@@ -22,9 +22,15 @@ export default function RootLayout({
     <html lang="en">
       <UserContextProvider>
         <body
-          className={`${ubuntu.className} antialiased flex flex-col items-center justify-center pt-20 gap-5 bg-background text-accent min-h-screen w-screen`}
+          className={`${ubuntu.className} antialiased flex flex-col items-center justify-center pt-20 bg-background text-accent min-h-screen w-screen`}
         >
-          {children}
+          <div
+            className={
+              " w-[25rem] max-lg:w-[30rem] max-md:w-[20rem] lg:w-[40rem]"
+            }
+          >
+            {children}
+          </div>
         </body>
       </UserContextProvider>
     </html>

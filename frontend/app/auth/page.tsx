@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import * as jose from "jose";
 import { UserContext } from "../contexts/usercontext";
 import { useRouter } from "next/navigation";
@@ -9,58 +9,10 @@ export default function Page() {
   const [login, setLogin] = useState<boolean>(true);
   const [alert, setAlert] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [submit, setSubmit] = useState<boolean>(false);
 
   const { handleSetUsername, handleSetAuthToken } = useContext(UserContext);
   const router = useRouter();
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setAlert("");
-    try {
-      const userData = new FormData();
-      userData.set("username", username);
-      userData.set("password", password);
-      const res = await fetch(
-        `http://localhost:8000/auth/${login ? "login" : "signup"}`,
-        {
-          body: userData,
-          method: "POST",
-        },
-      );
-
-      console.log(res);
-      const response = await res.json();
-      console.log(response);
-      handleSetAuthToken(response);
-
-      if (!res.ok) {
-        setAlert(
-          "There was an error authenticating your user. Here's the issue: " +
-            res.statusText,
-        );
-      }
-
-      const jwtKey = new TextEncoder().encode(process.env.NEXT_PUBLIC_JWT_KEY);
-
-      try {
-        if (jwtKey) {
-          const { payload } = await jose.jwtVerify(response, jwtKey);
-          console.log(payload);
-          handleSetUsername(payload.username as string);
-          router.push("/");
-        } else {
-          setAlert("Next Public JWT key is borked.");
-        }
-      } catch (e) {
-        console.log(e);
-      }
-
-      setUsername("");
-      setPassword("");
-    } catch (e) {
-      console.error("There was an error authing this user: " + e);
-    }
-  };
 
   const handleSetLogin = () => {
     if (login) {
@@ -70,6 +22,63 @@ export default function Page() {
     }
   };
 
+  useEffect(() => {
+    const handleSubmit = async () => {
+      setAlert("");
+      try {
+        const userData = new FormData();
+        userData.set("username", username);
+        userData.set("password", password);
+        const res = await fetch(
+          `http://localhost:8000/auth/${login ? "login" : "signup"}`,
+          {
+            body: userData,
+            method: "POST",
+          },
+        );
+
+        console.log(res);
+        const response = await res.json();
+        console.log(response);
+        handleSetAuthToken(response);
+
+        if (!res.ok) {
+          setAlert(
+            "There was an error authenticating your user. Here's the issue: " +
+              res.statusText,
+          );
+        }
+
+        const jwtKey = new TextEncoder().encode(
+          process.env.NEXT_PUBLIC_JWT_KEY,
+        );
+
+        try {
+          if (jwtKey) {
+            const { payload } = await jose.jwtVerify(response, jwtKey);
+            console.log(payload);
+            handleSetUsername(payload.username as string);
+            router.push("/");
+          } else {
+            setAlert("Next Public JWT key is borked.");
+          }
+        } catch (e) {
+          console.log(e);
+        }
+
+        setUsername("");
+        setPassword("");
+      } catch (e) {
+        console.error("There was an error authing this user: " + e);
+      }
+    };
+
+    if (submit) {
+      handleSubmit();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [submit]);
+
   return (
     <div className={"flex flex-col items-center gap-5"}>
       <h1 className={"text-2xl font-bold -mt-[25%]"}>
@@ -77,7 +86,10 @@ export default function Page() {
       </h1>
       <form
         className={"flex flex-col gap-3 w-56"}
-        onSubmit={(e) => handleSubmit(e)}
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
+          e.preventDefault();
+          setSubmit(true);
+        }}
       >
         <div className={"flex flex-col gap-1"}>
           <label htmlFor="username">username</label>

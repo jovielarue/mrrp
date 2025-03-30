@@ -98,7 +98,7 @@ export default function Post(props: IPost) {
       {props.editing ? (
         <div
           className={
-            "w-[25rem] flex justify-between gap-5 bg-secondary p-5 text-accent rounded-sm"
+            "w-full flex justify-between gap-5 bg-secondary p-5 text-accent rounded-sm"
           }
         >
           <div className={"flex flex-col gap-2"}>
@@ -148,7 +148,7 @@ export default function Post(props: IPost) {
       ) : (
         <div
           className={
-            "w-[25rem] flex justify-between gap-5 bg-primary p-5 text-background rounded-sm"
+            "w-full flex justify-between gap-5 bg-primary p-5 text-background rounded-sm"
           }
         >
           <div className={"flex flex-col w-full"}>
@@ -159,12 +159,14 @@ export default function Post(props: IPost) {
             <hr className={"border-1 border-background w-full my-2"} />
             <p className={"text-lg"}>{props.postWithUsername.post.text}</p>
           </div>
-          <div className={"flex flex-col items-end justify-start gap-2"}>
+          <div
+            className={"flex flex-col items-end justify-start gap-2 w-[8ch]"}
+          >
             {username === props.postWithUsername.username && (
               <>
                 <button
                   className={
-                    "bg-background text-primary px-2 py-1 rounded-sm hover:text-background hover:bg-accent w-[8ch]"
+                    "bg-background text-primary px-2 py-1 rounded-sm hover:text-background hover:bg-accent w-full"
                   }
                   onClick={() => {
                     props.handleEdit(

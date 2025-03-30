@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import * as jose from "jose";
 import { UserContext } from "../contexts/usercontext";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ export default function Page() {
   const { handleSetUsername, handleSetAuthToken } = useContext(UserContext);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setAlert("");
     try {

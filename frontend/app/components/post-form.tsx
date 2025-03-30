@@ -1,5 +1,11 @@
 "use client";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 import { PostWithUsername } from "./post";
 import { UserContext } from "../contexts/usercontext";
 
@@ -12,7 +18,7 @@ export default function PostForm(props: IPostFormType) {
   const [postText, setPostText] = useState<string>("");
   const { handleGetUsername, handleGetAuthToken } = useContext(UserContext);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const postData = new FormData();
@@ -39,15 +45,20 @@ export default function PostForm(props: IPostFormType) {
   };
 
   return (
-    <form className={"flex flex-col gap-3"} onSubmit={(e) => handleSubmit(e)}>
-      <div className={"flex flex-col gap-1"}>
-        <label htmlFor="post">Post text</label>
+    <form
+      className={"flex flex-col gap-3 w-full p-4"}
+      onSubmit={(e) => handleSubmit(e)}
+    >
+      <div className={"flex flex-col gap-1 w-full"}>
+        <label htmlFor="post" className={"text-xl"}>
+          mrrp text
+        </label>
         <textarea
           className={
-            "bg-secondary text-background placeholder-background p-2 rounded-sm"
+            "bg-secondary text-background placeholder-background p-2 rounded-sm text-lg w-full"
           }
           name="post"
-          placeholder="post text goes here..."
+          placeholder="mrrp goes here..."
           value={postText}
           onChange={(e) => {
             setPostText(e.target.value);

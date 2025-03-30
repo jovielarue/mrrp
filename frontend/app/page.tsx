@@ -10,6 +10,7 @@ export default function Home() {
   const [posts, setPosts] = useState<PostWithUsername[]>([]);
   const { handleGetUsername, handleSetUsername } = useContext(UserContext);
   const router = useRouter();
+  const [username, setUsername] = useState<string>("");
 
   const logout = () => {
     handleSetUsername("");
@@ -20,6 +21,7 @@ export default function Home() {
     if (handleGetUsername() === "") {
       router.push("/auth");
     }
+    setUsername(handleGetUsername());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -27,9 +29,7 @@ export default function Home() {
     <div className={"w-full flex flex-col items-center justify-center gap-10"}>
       <h1 className={"text-4xl font-bold"}>mrrp</h1>
       <div className={"flex flex-col items-center justify-center gap-3"}>
-        <h2 className={"text-2xl font-bold"}>
-          welcome, {handleGetUsername()}!
-        </h2>
+        <h2 className={"text-2xl font-bold"}>welcome, {username}!</h2>
         <button
           className={
             "text-sm bg-secondary text-accent hover:bg-accent2 px-2 py-1 rounded-md"

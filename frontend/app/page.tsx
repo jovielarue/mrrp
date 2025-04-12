@@ -32,7 +32,7 @@ export default function Home() {
         <h2 className={"text-2xl font-bold"}>welcome, {username}!</h2>
         <button
           className={
-            "text-sm bg-secondary text-accent hover:bg-accent2 px-2 py-1 rounded-md"
+            "text-sm bg-secondary text-accent hover:bg-accent2 px-2 py-1 rounded-sm"
           }
           onClick={logout}
         >

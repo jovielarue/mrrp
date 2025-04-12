@@ -5,6 +5,7 @@ use rocket::response::status::{Created, NotFound};
 use rocket::{delete, get, post, put};
 use shared::response_models::{Response, ResponseBody};
 
+use crate::analyze_for_ai;
 use crate::auth_handler::verify_jwt;
 
 #[get("/list_posts")]
@@ -28,7 +29,7 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 }
 
 #[post("/new_post", format = "multipart/form-data", data = "<post>")]
-pub fn create_post_handler(
+pub async fn create_post_handler(
     post: Form<PostForm>,
 ) -> Result<Created<String>, rocket::response::status::Unauthorized<String>> {
     println!("{}", post.username);
@@ -38,6 +39,8 @@ pub fn create_post_handler(
     };
     println!("{verified}");
     println!("{:?}", post.jwt);
+
+    analyze_for_ai().await;
 
     if verified == true {
         let post = create::create_post::<Post>(post);

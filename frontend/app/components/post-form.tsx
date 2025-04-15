@@ -16,10 +16,12 @@ interface IPostFormType {
 
 export default function PostForm(props: IPostFormType) {
   const [postText, setPostText] = useState<string>("");
+  const [postAlert, setPostAlert] = useState<boolean>(false);
   const { handleGetUsername, handleGetAuthToken } = useContext(UserContext);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPostAlert(false);
     try {
       const postData = new FormData();
       postData.set("post", postText);
@@ -34,6 +36,11 @@ export default function PostForm(props: IPostFormType) {
         body: postData,
         method: "POST",
       });
+
+      if (!response.ok) {
+        setPostAlert(true);
+        return;
+      }
 
       const postResponse = await response.json();
       props.setPosts([postResponse, ...props.posts]);
@@ -73,6 +80,12 @@ export default function PostForm(props: IPostFormType) {
       >
         Post!
       </button>
+      {postAlert && (
+        <p className={"text-accent2"}>
+          Your post was detected as being AI-generated. Please only post
+          human-generated content.
+        </p>
+      )}
     </form>
   );
 }

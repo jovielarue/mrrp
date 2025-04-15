@@ -1,8 +1,10 @@
 use api::{auth_handler, post_handler};
+use application::humanity_check;
 use rocket::*;
 
 #[launch]
 fn rocket() -> Rocket<Build> {
+    humanity_check::check::check("string");
     rocket::build()
         .attach(CORS)
         .mount(

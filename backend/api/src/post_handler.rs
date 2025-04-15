@@ -1,3 +1,4 @@
+use application::humanity_check::check::check;
 use application::post::{create, delete, edit, read};
 use domain::models::post::{Post, PostForm, PostReturn};
 use rocket::form::Form;
@@ -5,7 +6,6 @@ use rocket::response::status::{Created, NotFound};
 use rocket::{delete, get, post, put};
 use shared::response_models::{Response, ResponseBody};
 
-use crate::analyze_for_ai;
 use crate::auth_handler::verify_jwt;
 
 #[get("/list_posts")]
@@ -29,7 +29,7 @@ pub fn list_post_handler(post_id: i32) -> Result<String, NotFound<String>> {
 }
 
 #[post("/new_post", format = "multipart/form-data", data = "<post>")]
-pub async fn create_post_handler(
+pub fn create_post_handler(
     post: Form<PostForm>,
 ) -> Result<Created<String>, rocket::response::status::Unauthorized<String>> {
     println!("{}", post.username);
@@ -40,15 +40,13 @@ pub async fn create_post_handler(
     println!("{verified}");
     println!("{:?}", post.jwt);
 
-    analyze_for_ai().await;
-
-    if verified == true {
+    if verified == true && check(&post.post) {
         let post = create::create_post::<Post>(post);
         let post = post.expect("Unable to unwrap post");
         Ok(post)
     } else {
         Err(rocket::response::status::Unauthorized::<String>(
-            "You are unauthorized.".to_string(),
+            "You are unauthorized. Either you need to log in, or your post was detected as being written by AI.".to_string(),
         ))
     }
 }
